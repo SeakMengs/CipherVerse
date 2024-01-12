@@ -2,7 +2,9 @@ function TextEncrypt() {
 
     return (
     <>
-        <h1>Unfinished page</h1>
+        <div className="h-full w-full bg-red-400">
+            <h1>Unfinished page</h1>
+        </div>
     </>
     )
 }

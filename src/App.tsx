@@ -1,36 +1,60 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Home from "./ui/Home";
-import { lazy } from "react";
+import { Suspense, lazy } from "react";
 import { ThemeProvider } from "./components/theme-provider";
+import Layout from "./ui/Layout";
+import Loading from "./ui/Loading";
 
+const Home = lazy(() => import("@/ui/Home"));
 const NoMatch = lazy(() => import("@/ui/NoMatch"));
-const TextEncrypt = lazy(() => import("@/ui/encrypt/TextEncrypt"));
-const ImageEncrypt = lazy(() => import("@/ui/encrypt/ImageEncrypt"));
-const VideoEncrypt = lazy(() => import("@/ui/encrypt/VideoEncrypt"));
-const AudioEncrypt = lazy(() => import("@/ui/encrypt/AudioEncrypt"));
-const TextDecrypt = lazy(() => import("@/ui/decrypt/TextDecrypt"));
-const ImageDecrypt = lazy(() => import("@/ui/decrypt/ImageDecrypt"));
-const VideoDecrypt = lazy(() => import("@/ui/decrypt/VideoDecrypt"));
-const AudioDecrypt = lazy(() => import("@/ui/decrypt/AudioDecrypt"));
+const Text = lazy(() => import("@/ui/Text"));
+const Image = lazy(() => import("@/ui/Image"));
+const Video = lazy(() => import("@/ui/Video"));
+const Audio = lazy(() => import("@/ui/Audio"));
 
 function App() {
 
   return (
-    <ThemeProvider defaultTheme="system" storageKey="vite-ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="cipher-verse-theme">
       <Router>
         <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="*" element={<NoMatch />} />
-          {/* Group route for encrypt */}
-          <Route path="/encrypt/text" element={<TextEncrypt />} />
-          <Route path="/encrypt/image" element={<ImageEncrypt />} />
-          <Route path="/encrypt/video" element={<VideoEncrypt />} />
-          <Route path="/encrypt/audio" element={<AudioEncrypt />} />
-          {/* Group route for decrypt */}
-          <Route path="/decrypt/text" element={<TextDecrypt />} />
-          <Route path="/decrypt/image" element={<ImageDecrypt />} />
-          <Route path="/decrypt/video" element={<VideoDecrypt />} />
-          <Route path="/decrypt/audio" element={<AudioDecrypt />} />
+          <Route path="/" element={
+            <Suspense fallback={<Loading />}>
+              <Home />
+            </Suspense>
+          } />
+          <Route path="*" element={
+            <Suspense fallback={<Loading />}>
+              <NoMatch />
+            </Suspense>
+          } />
+          <Route path="/text" element={
+            <Suspense fallback={<Loading />}>
+              <Layout>
+                <Text />
+              </Layout>
+            </Suspense>
+          } />
+          <Route path="/image" element={
+            <Suspense fallback={<Loading />}>
+              <Layout>
+                <Image />
+              </Layout>
+            </Suspense>
+          } />
+          <Route path="/video" element={
+            <Suspense fallback={<Loading />}>
+              <Layout>
+                <Video />
+              </Layout>
+            </Suspense>
+          } />
+          <Route path="/audio" element={
+            <Suspense fallback={<Loading />}>
+              <Layout>
+                <Audio />
+              </Layout>
+            </Suspense>
+          } />
         </Routes>
       </Router>
     </ThemeProvider>

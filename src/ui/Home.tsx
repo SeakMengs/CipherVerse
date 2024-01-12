@@ -1,40 +1,72 @@
-import { AspectRatio } from "@/components/ui/aspect-ratio"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import { ImageIcon, TextIcon, VideoIcon } from "@radix-ui/react-icons"
-import React from "react"
+import React, { memo } from "react"
+import { Link } from "react-router-dom"
+import { IconFileMusic, IconPhoto, IconTextSize, IconVideo } from '@tabler/icons-react';
+
+type SectionProps = {
+    Icon: React.ElementType,
+    to: string,
+    text: string,
+}
 
 function Section({
-    Icon
-}: {
-    Icon: React.ElementType
-}) {
+    Icon,
+    to,
+    text,
+}: SectionProps) {
+
     return (
         <>
-            <AspectRatio ratio={8/2} className="m-12">
-                <Card className="grid place-items-center text-center h-full">
-                    <CardContent>
-                        <Icon className="w-48 h-48" />
-                        <Label>Text</Label>
-                    </CardContent>
-                </Card>
-            </AspectRatio>
+            <Link to={to}>
+                <Button variant="outline" className="h-full w-full min-w-96 min-h-96">
+                    <div className="grid place-items-center text-center gap-2">
+                        <Icon className="w-16 h-16" />
+                        <Label>{text}</Label>
+                    </div>
+                </Button>
+            </Link>
         </>
     )
 }
 
-function Home() {
+const Home = memo(() => {
+    const sections = [
+        {
+            Icon: IconTextSize,
+            to: "/text",
+            text: "Encrypt/Decrypt Text",
+        },
+        {
+            Icon: IconPhoto,
+            to: "/image",
+            text: "Encrypt/Decrypt Image",
+        },
+        {
+            Icon: IconVideo,
+            to: "/video",
+            text: "Encrypt/Decrypt Video",
+        },
+        {
+            Icon: IconFileMusic,
+            to: "/audio",
+            text: "Encrypt/Decrypt Audio",
+        }
+    ]
 
     return (
         <>
-            <div className="w-full h-screen grid grid-cols-2">
-                <Section Icon={TextIcon}/>
-                <Section Icon={ImageIcon}/>
-                <Section Icon={VideoIcon}/>
-                <Section Icon={TextIcon}/>
+            <div className="w-full h-screen flex flex-col justify-center items-center gap-12">
+                <div className="grid grid-cols-2 gap-12">
+                    {
+                        sections.map((section, index) => (
+                            <Section key={index} {...section} />
+                        ))
+                    }
+                </div>
             </div>
         </>
     )
-}
+});
 
-export default Home
+export default Home;
