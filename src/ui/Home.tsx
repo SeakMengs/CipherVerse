@@ -1,8 +1,11 @@
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import React, { memo } from "react"
+import React, { memo, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { IconFileMusic, IconPhoto, IconTextSize, IconVideo } from '@tabler/icons-react';
+import { invoke } from '@tauri-apps/api/tauri'
+import { Command } from '@tauri-apps/api/shell';
+import { listen } from '@tauri-apps/api/event';
 
 type SectionProps = {
     Icon: React.ElementType,
@@ -19,10 +22,10 @@ function Section({
     return (
         <>
             <Link to={to}>
-                <Button variant="outline" className="h-full w-full min-w-96 min-h-96">
+                <Button variant="outline" className="h-full w-full">
                     <div className="grid place-items-center text-center gap-2">
                         <Icon className="w-16 h-16" />
-                        <Label>{text}</Label>
+                        <Label className="">{text}</Label>
                     </div>
                 </Button>
             </Link>
@@ -54,10 +57,46 @@ const Home = memo(() => {
         }
     ]
 
+    async function testCmd() {
+        // const command = Command.sidecar("bin/python/cipher_verse", [
+        //     "text",
+        //     "-t",
+        //     "encrypt",
+        //     "-i",
+        //     "Hello World input",
+        //     "-k",
+        //     "Hello World key",
+        // ])
+        // const output = await command.execute();
+        // console.log(JSON.stringify(output.stdout, null, 2));
+        await invoke("cipher_verse", {
+            args: [
+                "text",
+                "-t",
+                "encrypt",
+                "-i",
+                "Hello World input",
+                "-k",
+                "Hello World key",
+            ]
+        });
+
+    }
+
+    useEffect(() => {
+        const unlisten = listen<string>('cipher_verse_message', (event) => {
+            console.log('Received event:', event.payload);
+        });
+
+        return () => {
+            unlisten.then(f => f());
+        };
+    }, [])
+
     return (
         <>
-            <div className="w-full h-screen flex flex-col justify-center items-center gap-12">
-                <div className="grid grid-cols-2 gap-12">
+            <div className="w-full h-screen grid place-items-center">
+                <div className="h-[90%] w-[90%] grid grid-cols-2 gap-12">
                     {
                         sections.map((section, index) => (
                             <Section key={index} {...section} />
@@ -65,6 +104,9 @@ const Home = memo(() => {
                     }
                 </div>
             </div>
+            <Button onClick={async () => testCmd()} variant="outline" className="absolute bottom-0 right-0 m-4">
+                Test Side Car from python
+            </Button>
         </>
     )
 });
