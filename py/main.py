@@ -101,4 +101,5 @@ def main():
 # run local
 # python main.py --help to see the usage of the script
 if __name__ == '__main__':
+    print("Starting CipherVerse...")
     main()

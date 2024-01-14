@@ -4,8 +4,8 @@ import React, { memo, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { IconFileMusic, IconPhoto, IconTextSize, IconVideo } from '@tabler/icons-react';
 import { invoke } from '@tauri-apps/api/tauri'
-import { Command } from '@tauri-apps/api/shell';
 import { listen } from '@tauri-apps/api/event';
+import { RUNNING_IN_TAURI } from "@/lib/utils";
 
 type SectionProps = {
     Icon: React.ElementType,
@@ -58,20 +58,9 @@ const Home = memo(() => {
     ]
 
     async function testCmd() {
-        // const command = Command.sidecar("bin/python/cipher_verse", [
-        //     "text",
-        //     "-t",
-        //     "encrypt",
-        //     "-i",
-        //     "Hello World input",
-        //     "-k",
-        //     "Hello World key",
-        // ])
-        // const output = await command.execute();
-        // console.log(JSON.stringify(output.stdout, null, 2));
         await invoke("cipher_verse", {
             args: [
-                "text",
+                "image",
                 "-t",
                 "encrypt",
                 "-i",
@@ -80,10 +69,14 @@ const Home = memo(() => {
                 "Hello World key",
             ]
         });
-
     }
 
     useEffect(() => {
+        if (!RUNNING_IN_TAURI) {
+            // console.log('Not running in tauri, skipping event listener');
+            return;
+        }
+
         const unlisten = listen<string>('cipher_verse_message', (event) => {
             console.log('Received event:', event.payload);
         });
@@ -95,18 +88,22 @@ const Home = memo(() => {
 
     return (
         <>
-            <div className="w-full h-screen grid place-items-center">
-                <div className="h-[90%] w-[90%] grid grid-cols-2 gap-12">
-                    {
-                        sections.map((section, index) => (
-                            <Section key={index} {...section} />
-                        ))
-                    }
+            {/* FIXME: fix scroll area */}
+            {/* <div className="w-full h-full"> */}
+            <div className="w-full h-[90vh]">
+                <div className="w-full h-full grid place-items-center">
+                    <div className="h-[90%] w-[90%] grid grid-cols-2 gap-12">
+                        {
+                            sections.map((section, index) => (
+                                <Section key={index} {...section} />
+                            ))
+                        }
+                    </div>
                 </div>
             </div>
-            <Button onClick={async () => testCmd()} variant="outline" className="absolute bottom-0 right-0 m-4">
+            {/* <Button onClick={async () => testCmd()} variant="outline" className="absolute bottom-0 right-0 m-4">
                 Test Side Car from python
-            </Button>
+            </Button> */}
         </>
     )
 });

@@ -1,6 +1,6 @@
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { memo, useEffect, useState } from "react";
+import { memo, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
 
 type Props = {
@@ -12,22 +12,12 @@ type Props = {
 
 const EncryptOrDecrypt = memo(({ label, Icon, EncryptContent, DecryptContent }: Props) => {
     const [searchParams, setSearchParams] = useSearchParams();
-    const [tab, setTab] = useState<string>(searchParams.get("type") || "encrypt");
-    
-    useEffect(() => {
-        const type = searchParams.get("type");
-        if (type) {
-            if (type !== "encrypt" && type !== "decrypt") {
-                setSearchParams({ type: "encrypt" });
-                setTab("encrypt");
-            } else {
-                setTab(type);
-            }
-            return;
-        }
+    const tab = searchParams.get("type") || "encrypt";
 
+    useEffect(() => {
+        if (tab == searchParams.get("type")) return;
         setSearchParams({ type: tab });
-    }, [tab, setSearchParams, searchParams]);
+    }, [tab, setSearchParams])
 
     return (
         <>
@@ -38,7 +28,6 @@ const EncryptOrDecrypt = memo(({ label, Icon, EncryptContent, DecryptContent }: 
                 </div>
                 <Tabs defaultValue={tab} onValueChange={(value) => {
                     setSearchParams({ type: value });
-                    setTab(value);
                 }} className="w-[100%]" value={tab}>
                     <div className="grid place-items-center">
                         <TabsList className="grid w-[40%] grid-cols-2">
