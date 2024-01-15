@@ -6,7 +6,6 @@ import {
     MenubarMenu,
     MenubarTrigger,
 } from "@/components/ui/menubar"
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -116,28 +115,30 @@ const Layout = memo(({ children }: { children: React.ReactNode }) => {
 
     return (
         <>
-            <div className="overflow-hidden h-screen">
-                <Menubar>
-                    <MenubarMenu>
-                        <MenubarTrigger>Setting</MenubarTrigger>
-                        <MenubarContent>
-                            <MenubarItem onClick={() => setOpenSetVariant((prev) => !prev)}>
-                                Set Variant
-                            </MenubarItem>
-                            <MenubarItem>
-                                About
-                            </MenubarItem>
-                        </MenubarContent>
-                    </MenubarMenu>
-                </Menubar>
-                <Dialog open={openSetVariant} onOpenChange={setOpenSetVariant}>
-                    <DialogContent>
-                        <SetVariant setOpenVariant={setOpenSetVariant} />
-                    </DialogContent>
-                </Dialog>
-                <ScrollArea className="w-full h-full rounded-md border flex" >
+            <div className="h-screen overflow-hidden">
+                <div className="">
+                    <Menubar>
+                        <MenubarMenu>
+                            <MenubarTrigger>Setting</MenubarTrigger>
+                            <MenubarContent>
+                                <MenubarItem onClick={() => setOpenSetVariant((prev) => !prev)}>
+                                    Set Variant
+                                </MenubarItem>
+                                <MenubarItem>
+                                    About
+                                </MenubarItem>
+                            </MenubarContent>
+                        </MenubarMenu>
+                    </Menubar>
+                    <Dialog open={openSetVariant} onOpenChange={setOpenSetVariant}>
+                        <DialogContent>
+                            <SetVariant setOpenVariant={setOpenSetVariant} />
+                        </DialogContent>
+                    </Dialog>
+                </div>
+                <div className="w-full h-[calc(100%-36px)] ">
                     {children}
-                </ScrollArea>
+                </div>
             </div>
         </>
     )

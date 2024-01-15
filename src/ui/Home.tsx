@@ -3,7 +3,7 @@ import { Label } from "@/components/ui/label"
 import React, { memo, useEffect } from "react"
 import { Link } from "react-router-dom"
 import { IconFileMusic, IconPhoto, IconTextSize, IconVideo } from '@tabler/icons-react';
-import { invoke } from '@tauri-apps/api/tauri'
+// import { invoke } from '@tauri-apps/api/tauri'
 import { listen } from '@tauri-apps/api/event';
 import { RUNNING_IN_TAURI } from "@/lib/utils";
 
@@ -57,19 +57,19 @@ const Home = memo(() => {
         }
     ]
 
-    async function testCmd() {
-        await invoke("cipher_verse", {
-            args: [
-                "image",
-                "-t",
-                "encrypt",
-                "-i",
-                "Hello World input",
-                "-k",
-                "Hello World key",
-            ]
-        });
-    }
+    // async function testCmd() {
+    //     await invoke("cipher_verse", {
+    //         args: [
+    //             "image",
+    //             "-t",
+    //             "encrypt",
+    //             "-i",
+    //             "Hello World input",
+    //             "-k",
+    //             "Hello World key",
+    //         ]
+    //     });
+    // }
 
     useEffect(() => {
         if (!RUNNING_IN_TAURI) {
@@ -89,8 +89,8 @@ const Home = memo(() => {
     return (
         <>
             {/* FIXME: fix scroll area */}
-            {/* <div className="w-full h-full"> */}
-            <div className="w-full h-[90vh]">
+            <div className="w-full h-full">
+            {/* <div className="w-full h-[90vh]"> */}
                 <div className="w-full h-full grid place-items-center">
                     <div className="h-[90%] w-[90%] grid grid-cols-2 gap-12">
                         {
