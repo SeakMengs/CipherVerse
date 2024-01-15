@@ -9,7 +9,7 @@ const BackLayout = memo(({ children }: { children: React.ReactNode }) => {
 
     return (
         <ScrollArea className="h-full rounded-md border">
-            <div className="w-[95%] h-full m-auto">
+            <div className="w-full h-full m-auto px-5">
                 <TooltipProvider>
                     <Tooltip>
                         <TooltipTrigger asChild>
