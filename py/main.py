@@ -1,5 +1,3 @@
-import time
-from time import sleep
 from modules import CipherVerseText, CipherVerseAudio, CipherVerseImage, CipherVerseVideo
 import argparse
 

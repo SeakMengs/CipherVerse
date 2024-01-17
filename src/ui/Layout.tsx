@@ -1,40 +1,40 @@
-import { memo, useState } from "react";
-import {
-    Menubar,
-    MenubarContent,
-    MenubarItem,
-    MenubarMenu,
-    MenubarTrigger,
-} from "@/components/ui/menubar"
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
-import SetVariantForm from "@/components/custom/SetVariantForm";
+import { memo } from "react";
+// import {
+//     Menubar,
+//     MenubarContent,
+//     MenubarItem,
+//     MenubarMenu,
+//     MenubarTrigger,
+// } from "@/components/ui/menubar"
+// import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+// import SetVariantForm from "@/components/custom/SetVariantForm";
 
-type SetVariantProps = {
-    setOpenVariant: React.Dispatch<React.SetStateAction<boolean>>;
-}
+// type SetVariantProps = {
+//     setOpenVariant: React.Dispatch<React.SetStateAction<boolean>>;
+// }
 
-const SetVariant = ({ setOpenVariant }: SetVariantProps) => {
+// const SetVariant = ({ setOpenVariant }: SetVariantProps) => {
 
-    return (
-        <>
-            <DialogHeader>
-                <DialogTitle>Set Variant</DialogTitle>
-                <DialogDescription>
-                    Set variant and key for encryption. Click save when you're done.
-                </DialogDescription>
-                <SetVariantForm submitCallback={() => setOpenVariant(false)}/>
-            </DialogHeader>
-        </>
-    )
-}
+//     return (
+//         <>
+//             <DialogHeader>
+//                 <DialogTitle>Set Variant</DialogTitle>
+//                 <DialogDescription>
+//                     Set variant and key for encryption. Click save when you're done.
+//                 </DialogDescription>
+//                 <SetVariantForm submitCallback={() => setOpenVariant(false)}/>
+//             </DialogHeader>
+//         </>
+//     )
+// }
 
 const Layout = memo(({ children }: { children: React.ReactNode }) => {
-    const [openSetVariant, setOpenSetVariant] = useState<boolean>(false);
+    // const [openSetVariant, setOpenSetVariant] = useState<boolean>(false);
 
     return (
         <>
             <div className="h-screen overflow-hidden">
-                <div className="">
+                {/* <div className="">
                     <Menubar>
                         <MenubarMenu>
                             <MenubarTrigger>Setting</MenubarTrigger>
@@ -54,7 +54,8 @@ const Layout = memo(({ children }: { children: React.ReactNode }) => {
                         </DialogContent>
                     </Dialog>
                 </div>
-                <div className="w-full h-[calc(100%-36px)] ">
+                <div className="w-full h-[calc(100%-36px)] "> */}
+                <div className="w-full h-full ">
                     {children}
                 </div>
             </div>

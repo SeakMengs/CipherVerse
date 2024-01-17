@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
-import { memo, useEffect, useState } from "react";
+import { memo } from "react";
 
 const variantSchema = z.object({
     // coerce auto convert string to number
@@ -24,23 +24,22 @@ type SetVariantFormProps = {
     submitCallback?: () => void;
 }
 
-const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
-    const getVariantFromStorage = (): z.infer<typeof variantSchema> => {
-        return {
-            c1: parseInt(localStorage.getItem("c1") || "0"),
-            c2: parseInt(localStorage.getItem("c2") || "0"),
-            y1: parseInt(localStorage.getItem("y1") || "0"),
-            y2: parseInt(localStorage.getItem("y2") || "0"),
-            y1_prime: parseInt(localStorage.getItem("y1_prime") || "0"),
-            y2_prime: parseInt(localStorage.getItem("y2_prime") || "0"),
-            key: localStorage.getItem("key") || "",
-        }
+export const getVariantFromStorage = (): z.infer<typeof variantSchema> => {
+    return {
+        c1: parseInt(localStorage.getItem("c1") || "0"),
+        c2: parseInt(localStorage.getItem("c2") || "0"),
+        y1: parseInt(localStorage.getItem("y1") || "0"),
+        y2: parseInt(localStorage.getItem("y2") || "0"),
+        y1_prime: parseInt(localStorage.getItem("y1_prime") || "0"),
+        y2_prime: parseInt(localStorage.getItem("y2_prime") || "0"),
+        key: localStorage.getItem("key") || "",
     }
+}
 
-    const [defaultFormValues, setDefaultFormValues] = useState<z.infer<typeof variantSchema>>(getVariantFromStorage());
+const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
     const form = useForm<z.infer<typeof variantSchema>>({
         resolver: zodResolver(variantSchema),
-        defaultValues: defaultFormValues
+        defaultValues: getVariantFromStorage(),
     })
     const { toast } = useToast();
 
@@ -63,15 +62,7 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
         if (typeof submitCallback !== "undefined") {
             submitCallback();
         }
-
     }
-
-    useEffect(() => {
-        // update ui when localstorage change
-        window.addEventListener("storage", () => {
-            setDefaultFormValues(getVariantFromStorage());
-        })
-    })
 
     return (
         <>
