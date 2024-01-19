@@ -1,5 +1,5 @@
 import { IconFileMusic } from "@tabler/icons-react";
-import EncryptOrDecrypt from "./EncryptOrDecrypt";
+import EncryptOrDecrypt from "../components/custom/EncryptOrDecrypt";
 import AudioEncrypt from "./encrypt/AudioEncrypt";
 import AudioDecrypt from "./decrypt/AudioDecrypt";
 import { memo } from "react";

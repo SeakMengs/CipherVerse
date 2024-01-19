@@ -1,10 +1,10 @@
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import { Suspense, lazy } from "react";
-import { ThemeProvider } from "./components/theme-provider";
-import BackLayout from "@/ui/BackLayout";
+import { ThemeProvider } from "@/components/theme-provider";
+import BackLayout from "@/components/custom/BackLayout";
 import Loading from "@/ui/Loading";
-import Layout from "./ui/Layout";
-import { Toaster } from "./components/ui/toaster";
+import Layout from "@/ui/Layout";
+import { Toaster } from "@/components/ui/toaster";
 
 const Home = lazy(() => import("@/ui/Home"));
 const NoMatch = lazy(() => import("@/ui/NoMatch"));

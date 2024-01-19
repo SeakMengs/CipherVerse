@@ -6,37 +6,14 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { useToast } from "@/components/ui/use-toast";
 import { Button } from "@/components/ui/button";
 import { memo } from "react";
-
-const variantSchema = z.object({
-    // coerce auto convert string to number
-    c1: z.coerce.number(),
-    c2: z.coerce.number(),
-    y1: z.coerce.number(),
-    y2: z.coerce.number(),
-    y1_prime: z.coerce.number(),
-    y2_prime: z.coerce.number(),
-    key: z.string().length(16, {
-        message: "Key must be exactly 16 characters long"
-    }),
-})
+import { useVariantStore, variantSchema } from "@/hooks/useVariantStore";
 
 type SetVariantFormProps = {
     submitCallback?: () => void;
 }
 
-export const getVariantFromStorage = (): z.infer<typeof variantSchema> => {
-    return {
-        c1: parseInt(localStorage.getItem("c1") || "0"),
-        c2: parseInt(localStorage.getItem("c2") || "0"),
-        y1: parseInt(localStorage.getItem("y1") || "0"),
-        y2: parseInt(localStorage.getItem("y2") || "0"),
-        y1_prime: parseInt(localStorage.getItem("y1_prime") || "0"),
-        y2_prime: parseInt(localStorage.getItem("y2_prime") || "0"),
-        key: localStorage.getItem("key") || "",
-    }
-}
-
 const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
+    const { getVariantFromStorage } = useVariantStore();
     const form = useForm<z.infer<typeof variantSchema>>({
         resolver: zodResolver(variantSchema),
         defaultValues: getVariantFromStorage(),
@@ -57,8 +34,6 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
             description: "Variant has been successfully set!",
         })
 
-        window.dispatchEvent(new Event("storage"));
-
         if (typeof submitCallback !== "undefined") {
             submitCallback();
         }
@@ -76,7 +51,7 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
                                 <FormItem className="flex-grow">
                                     <FormLabel>C1</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="C1" {...field} />
+                                        <Input type="number" placeholder="C1" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -89,7 +64,7 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
                                 <FormItem className="flex-grow">
                                     <FormLabel>C2</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="C2" {...field} />
+                                        <Input type="number" placeholder="C2" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -104,7 +79,7 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
                                 <FormItem className="flex-grow">
                                     <FormLabel>Y1</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Y1" {...field} />
+                                        <Input type="number" placeholder="Y1" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -117,7 +92,7 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
                                 <FormItem className="flex-grow">
                                     <FormLabel>Y2</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Y2" {...field} />
+                                        <Input type="number" placeholder="Y2" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -132,7 +107,7 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
                                 <FormItem className="flex-grow">
                                     <FormLabel>Y1'</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Y1'" {...field} />
+                                        <Input type="number" placeholder="Y1'" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>
@@ -145,7 +120,7 @@ const SetVariantForm = memo(({ submitCallback }: SetVariantFormProps) => {
                                 <FormItem className="flex-grow">
                                     <FormLabel>Y2'</FormLabel>
                                     <FormControl>
-                                        <Input placeholder="Y2'" {...field} />
+                                        <Input type="number" placeholder="Y2'" {...field} />
                                     </FormControl>
                                     <FormMessage />
                                 </FormItem>

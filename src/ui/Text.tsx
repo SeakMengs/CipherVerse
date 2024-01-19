@@ -1,5 +1,5 @@
 import { IconTextSize } from "@tabler/icons-react";
-import EncryptOrDecrypt from "./EncryptOrDecrypt";
+import EncryptOrDecrypt from "../components/custom/EncryptOrDecrypt";
 import TextEncrypt from "./encrypt/TextEncrypt";
 import TextDecrypt from "./decrypt/TextDecrypt";
 import { memo } from "react";

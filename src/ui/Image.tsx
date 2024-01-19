@@ -1,5 +1,5 @@
 import { IconPhoto } from "@tabler/icons-react";
-import EncryptOrDecrypt from "./EncryptOrDecrypt";
+import EncryptOrDecrypt from "../components/custom/EncryptOrDecrypt";
 import ImageEncrypt from "./encrypt/ImageEncrypt";
 import ImageDecrypt from "./decrypt/ImageDecrypt";
 import { memo } from "react";

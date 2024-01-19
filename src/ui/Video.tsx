@@ -1,5 +1,5 @@
 import { IconVideo } from "@tabler/icons-react";
-import EncryptOrDecrypt from "./EncryptOrDecrypt";
+import EncryptOrDecrypt from "../components/custom/EncryptOrDecrypt";
 import VideoEncrypt from "./encrypt/VideoEncrypt";
 import VideoDecrypt from "./decrypt/VideoDecrypt";
 import { memo } from "react";

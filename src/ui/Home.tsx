@@ -1,11 +1,8 @@
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
-import React, { memo, useEffect } from "react"
+import React, { memo } from "react"
 import { Link } from "react-router-dom"
 import { IconFileMusic, IconPhoto, IconTextSize, IconVideo } from '@tabler/icons-react';
-// import { invoke } from '@tauri-apps/api/tauri'
-import { listen } from '@tauri-apps/api/event';
-import { RUNNING_IN_TAURI } from "@/lib/utils";
 import SetVariantForm from "@/components/custom/SetVariantForm";
 import { Card } from "@/components/ui/card";
 
@@ -59,58 +56,26 @@ const Home = memo(() => {
         }
     ]
 
-    // async function testCmd() {
-    //     await invoke("cipher_verse", {
-    //         args: [
-    //             "image",
-    //             "-t",
-    //             "encrypt",
-    //             "-i",
-    //             "Hello World input",
-    //             "-k",
-    //             "Hello World key",
-    //         ]
-    //     });
-    // }
-
-    useEffect(() => {
-        if (!RUNNING_IN_TAURI) {
-            // console.log('Not running in tauri, skipping event listener');
-            return;
-        }
-
-        const unlisten = listen<string>('cipher_verse_message', (event) => {
-            console.log('Received event:', event.payload);
-        });
-
-        return () => {
-            unlisten.then(f => f());
-        };
-    }, [])
-
     return (
         <>
-        <div className="overflow-y-auto h-full">
-            <div className="w-full h-full m-auto flex flex-col px-5">
-                <div className="py-5">
-                    <Card>
-                        <div className="p-6">
-                            <SetVariantForm key={2}/>
-                        </div>
-                    </Card>
-                </div>
-                <div className="h-full w-full grid grid-cols-2 gap-5 pb-5">
-                    {
-                        sections.map((section, index) => (
-                            <Section key={index} {...section} />
-                        ))
-                    }
+            <div className="overflow-y-auto h-full">
+                <div className="w-full h-full m-auto flex flex-col px-5">
+                    <div className="py-5">
+                        <Card>
+                            <div className="p-6">
+                                <SetVariantForm key={2} />
+                            </div>
+                        </Card>
+                    </div>
+                    <div className="h-full w-full grid grid-cols-2 gap-5 pb-5">
+                        {
+                            sections.map((section, index) => (
+                                <Section key={index} {...section} />
+                            ))
+                        }
+                    </div>
                 </div>
             </div>
-        </div>
-            {/* <Button onClick={async () => testCmd()} variant="outline" className="absolute bottom-0 right-0 m-4">
-                Test Side Car from python
-            </Button> */}
         </>
     )
 });

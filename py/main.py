@@ -10,7 +10,9 @@ def main():
 
     """
         Text
-        Usage: python main.py text -type <encrypt/decrypt> -input <input_text> -key <key>
+        Usage: python main.py text -t encrypt -i "hello" -k 1234567891234567 -c1 0.4 -c2 0.4 -y1 0.4 -y2 0.4 -y1_prime 0.4 -y2_prime 0.4
+        Decrypt: python main.py text -t decrypt -i ojÔÇġĦŮ -c1_prime 0.08126961194545856 -c2_prime 0.8021330514802685 -y1_prime 0.242 -y2_prime -0.955
+        Progress: done
     """
     text_parser = subparsers.add_parser(
         'text', help='Perform encrypt and decrypt operations on text.')
@@ -19,6 +21,22 @@ def main():
     text_parser.add_argument('-input', '-i', type=str, help='The input text.')
     text_parser.add_argument('-key', '-k', type=str,
                              help='The key to use for encryption/decryption.')
+    text_parser.add_argument('-c1', type=float,
+                             help='The c1 value to use for encryption/decryption.')
+    text_parser.add_argument('-c2', type=float,
+                             help='The c2 value to use for encryption/decryption.')
+    text_parser.add_argument('-y1', type=float,
+                             help='The y1 value to use for encryption/decryption.')
+    text_parser.add_argument('-y2', type=float,
+                             help='The y2 value to use for encryption/decryption.')
+    text_parser.add_argument('-y1_prime', type=float,
+                             help='The y1_prime value to use for encryption/decryption.')
+    text_parser.add_argument('-y2_prime', type=float,
+                             help='The y2_prime value to use for encryption/decryption.')
+    text_parser.add_argument('-c1_prime', type=float,
+                             help='The c1_prime value to use for encryption/decryption.')
+    text_parser.add_argument('-c2_prime', type=float,
+                             help='The c2_prime value to use for encryption/decryption.')
 
     """
         Audio
@@ -69,9 +87,20 @@ def main():
 
     if args.type == 'encrypt':
         if args.command == 'text':
-            cvt = CipherVerseText(args.input, args.key)
-            cvt.encrypt()
-            print(cvt.key, cvt.text)
+            cvt = CipherVerseText()
+            key_results, original_values, cipher_values, cipher_text = cvt.encrypt(
+                key=args.key, plain_text=args.input, c1=args.c1, c2=args.c2, y1=args.y1, y2=args.y2, y1_prime=args.y1_prime, y2_prime=args.y2_prime)
+
+            # This print will be used to get the result from subprocess
+            print("result-text-encrypt-splitter", {
+                "key_results": key_results,
+                "original_values": original_values,
+                "cipher_values": cipher_values,
+            })
+
+            # decrypt_values, decrypted_text = cvt.decrypt(
+            #     cipher_text=cipher_text, c1_prime=key_results[14], c2_prime=key_results[15], y1_prime=args.y1_prime, y2_prime=args.y2_prime)
+            # print("Decrypted text: ", decrypted_text)
         elif args.command == 'audio':
             cva = CipherVerseAudio(args.input, args.output, args.key)
             cva.encrypt()
@@ -83,8 +112,14 @@ def main():
             cvv.encrypt()
     elif args.type == 'decrypt':
         if args.command == 'text':
-            cvt = CipherVerseText(args.input, args.key)
-            cvt.decrypt()
+            cvt = CipherVerseText()
+            decrypt_values, decrypted_text, cipher_values = cvt.decrypt(cipher_text=args.input, c1_prime=args.c1_prime,
+                                         c2_prime=args.c2_prime, y1_prime=args.y1_prime, y2_prime=args.y2_prime)
+            print("result-text-decrypt-splitter", {
+                "decrypt_values": decrypt_values,
+                "cipher_values": cipher_values,
+            })
+
         elif args.command == 'audio':
             cva = CipherVerseAudio(args.input, args.output, args.key)
             cva.decrypt()
