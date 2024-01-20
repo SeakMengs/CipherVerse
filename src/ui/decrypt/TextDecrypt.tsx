@@ -1,4 +1,4 @@
-import DecryptForm from "@/components/custom/DecryptForm";
+import TextDecryptForm from "@/components/custom/TextDecryptForm";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useTextCipher } from "@/hooks/useTextCipher";
@@ -45,7 +45,7 @@ const TextDecrypt = memo(() => {
         <>
             <div className="w-full h-[full] m-auto flex flex-col px-5">
                 <div className="p-6">
-                    <DecryptForm inputLabel="Plain Text" formType={CryptoFormType.TextDecrypt} />
+                    <TextDecryptForm inputLabel="Plain Text" formType={CryptoFormType.TextDecrypt} />
                     <Separator className="my-3" />
                     <div className="flex justify-center m-2">
                         <Label>Output</Label>

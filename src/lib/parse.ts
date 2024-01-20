@@ -3,6 +3,7 @@ export function parseStdOut<T>(stdout: string): T {
         // enforce 'jsonKey' to be "jsonKey" because python dict key use single quote
         // for example "{'key': 'value'}"" is not valid string to be parsed by JSON.parse
         const correctedResultString = stdout.replace(/'/g, '"');
+        console.log(JSON.parse(correctedResultString));
         return JSON.parse(correctedResultString);
     } catch (error) {
         console.log(error);

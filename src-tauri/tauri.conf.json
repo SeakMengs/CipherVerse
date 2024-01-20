@@ -24,6 +24,23 @@
             "args": true
           }
         ]
+      },
+      "dialog": {
+        "open": true
+      },
+      "path": {
+        "all": true
+      },
+      "fs": {
+        "all": true,
+        "scope": {
+          "allow": ["**"],
+          "requireLiteralLeadingDot": false
+        }
+      },
+      "protocol": {
+        "asset": true,
+        "assetScope": ["**"]
       }
     },
     "bundle": {
@@ -42,7 +59,7 @@
       ]
     },
     "security": {
-      "csp": null
+      "csp": "asset: https://asset.localhost"
     },
     "windows": [
       {

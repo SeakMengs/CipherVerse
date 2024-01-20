@@ -1,4 +1,4 @@
-import EncryptForm from "@/components/custom/EncryptForm";
+import TextEncryptForm from "@/components/custom/TextEncryptForm";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { useTextCipher } from "@/hooks/useTextCipher";
@@ -49,7 +49,7 @@ const TextEncrypt = memo(() => {
         <>
             <div className="w-full h-[full] m-auto flex flex-col px-5">
                 <div className="p-6">
-                    <EncryptForm inputLabel="Plain Text" formType={CryptoFormType.TextEncrypt} />
+                    <TextEncryptForm inputLabel="Plain Text" formType={CryptoFormType.TextEncrypt} />
                     <Separator className="my-3" />
                     <div className="flex justify-center m-2">
                         <Label>Output</Label>
