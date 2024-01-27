@@ -98,7 +98,7 @@ def main():
                 "cipher_values": cipher_values,
             })
 
-            # decrypt_values, decrypted_text = cvt.decrypt(
+            # decrypt_values, decrypted_text, cipher_values= cvt.decrypt(
             #     cipher_text=cipher_text, c1_prime=key_results[14], c2_prime=key_results[15], y1_prime=args.y1_prime, y2_prime=args.y2_prime)
             # print("Decrypted text: ", decrypted_text)
         elif args.command == 'audio':

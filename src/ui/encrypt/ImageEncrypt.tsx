@@ -1,13 +1,13 @@
 import FileEncryptForm from "@/components/custom/FileEncryptForm";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-import { parseStdOut } from "@/lib/parse";
+// import { parseStdOut } from "@/lib/parse";
 import { RUNNING_IN_TAURI } from "@/lib/utils";
 import { PyMessageIdentifier } from "@/types/event";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
-import { convertFileSrc } from "@tauri-apps/api/tauri";
+// import { convertFileSrc } from "@tauri-apps/api/tauri";
 
 const ImageEncrypt = memo(() => {
     useEffect(() => {
@@ -21,13 +21,13 @@ const ImageEncrypt = memo(() => {
 
             const splitPayload = event.payload.split('-splitter');
             if (splitPayload[0] === PyMessageIdentifier.ResultImageEncrypt) {
-                type ImageEncryptResult = {
-                    key_results: number[],
-                    original_values: number[],
-                    cipher_values: number[],
-                }
+                // type ImageEncryptResult = {
+                //     key_results: number[],
+                //     original_values: number[],
+                //     cipher_values: number[],
+                // }
 
-                const result = parseStdOut<ImageEncryptResult>(splitPayload[1]);
+                // const result = parseStdOut<ImageEncryptResult>(splitPayload[1]);
 
                 // setImageEncrypted({
                 //     cipherText: result.cipher_values.map((v) => String.fromCharCode(v)).join(''),
@@ -47,7 +47,7 @@ const ImageEncrypt = memo(() => {
         <>
             <div className="w-full h-[full] m-auto flex flex-col px-5">
                 <div className="p-6">
-                    <FileEncryptForm inputLabel="Plain Image" outputLabel="Output path" formType={CryptoFormType.ImageEncrypt} />
+                    <FileEncryptForm formType={CryptoFormType.ImageEncrypt} />
                     <Separator className="my-3" />
                     <div className="flex justify-center m-2">
                         <Label>Output</Label>

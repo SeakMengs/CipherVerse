@@ -40,11 +40,11 @@ class CipherVerseText:
         y = [y1_prime, y2_prime]
         for i in range(len(plain_text)):
             original_values.append(ord(plain_text[i]))
-            # y_n = round(ord(plain_text[i]) + c1_prime * y[0] + c2_prime * y[1])
-            y_n = ((ord(plain_text[i]) - 128) / 128) + c1_prime * y[0] + c2_prime * y[1]
-            print("round:", ((ord(plain_text[i]) - 128) / 128))
+            y_n = round(ord(plain_text[i]) + c1_prime * y[0] + c2_prime * y[1])
+            # y_n = ((ord(plain_text[i]) - 128) / 128) + c1_prime * y[0] + c2_prime * y[1]
+            # print("round:", ((ord(plain_text[i]) - 128) / 128))
             # y_n = ord(plain_text[i]) + c1_prime * y[0] + c2_prime * y[1]
-            print(y_n)
+            # print(y_n)
             cipher_values.append(y_n)
 
             y[1], y[0] = y[0], y_n

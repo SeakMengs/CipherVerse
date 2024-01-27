@@ -45,7 +45,7 @@ const TextDecrypt = memo(() => {
         <>
             <div className="w-full h-[full] m-auto flex flex-col px-5">
                 <div className="p-6">
-                    <TextDecryptForm inputLabel="Plain Text" formType={CryptoFormType.TextDecrypt} />
+                    <TextDecryptForm inputLabel="Cipher Text" formType={CryptoFormType.TextDecrypt} />
                     <Separator className="my-3" />
                     <div className="flex justify-center m-2">
                         <Label>Output</Label>

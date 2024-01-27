@@ -18,15 +18,17 @@ type FileEncryptFormProps = {
 
 function FileEncryptForm({ formType, inputLabel, outputLabel, submitCallback }: FileEncryptFormProps) {
     const fileEncryptForm = z.object({
-        input: z.string().min(1),
-        output: z.string().min(1),
+        plainInputFilePath: z.string().min(1),
+        cipherOutputFolderPath: z.string().min(1),
+        cipherOutputFileName: z.string().min(1),
     })
 
     const form = useForm<z.infer<typeof fileEncryptForm>>({
         resolver: zodResolver(fileEncryptForm),
         defaultValues: {
-            input: "",
-            output: "",
+            plainInputFilePath: "",
+            cipherOutputFolderPath: "",
+            cipherOutputFileName: "",
         }
     })
 
@@ -51,20 +53,20 @@ function FileEncryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-3">
                 <FormField
                     control={form.control}
-                    name="input"
+                    name="plainInputFilePath"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{inputLabel ?? "Input"}</FormLabel>
+                            <FormLabel>{inputLabel ?? "Plain Input File Path"}</FormLabel>
                             <FormControl>
                                 <div className="flex items-center gap-4">
-                                    <Input disabled placeholder={inputLabel ?? "Input"} {...field} />
-                                    <IconFile onClick={async () => {
+                                    <Input disabled placeholder={inputLabel ?? "Plain Input File Path"} {...field} />
+                                    <IconFile className="cursor-pointer" onClick={async () => {
                                         if (!RUNNING_IN_TAURI) {
                                             console.log("Not Running on tauri skip opening file")
                                             return
                                         }
 
-                                        form.setValue("input", await open() as string)
+                                        form.setValue("plainInputFilePath", await open() as string)
                                     }} />
                                 </div>
                             </FormControl>
@@ -74,24 +76,37 @@ function FileEncryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
                 />
                 <FormField
                     control={form.control}
-                    name="output"
+                    name="cipherOutputFolderPath"
                     render={({ field }) => (
                         <FormItem>
-                            <FormLabel>{outputLabel ?? "Output"}</FormLabel>
+                            <FormLabel>{outputLabel ?? "Cipher Output Folder Path"}</FormLabel>
                             <FormControl>
                                 <div className="flex items-center gap-4">
-                                    <Input disabled placeholder={outputLabel ?? "Output"} {...field} />
-                                    <IconFile onClick={async () => {
+                                    <Input disabled placeholder={outputLabel ?? "Cipher Output Folder Path"} {...field} />
+                                    <IconFile className="cursor-pointer" onClick={async () => {
                                         if (!RUNNING_IN_TAURI) {
                                             console.log("Not Running on tauri skip opening directory")
                                             return
                                         }
 
-                                        form.setValue("output", await open({
+                                        form.setValue("cipherOutputFolderPath", await open({
                                             directory: true,
                                         }) as string)
                                     }} />
                                 </div>
+                            </FormControl>
+                            <FormMessage />
+                        </FormItem>
+                    )}
+                />
+                <FormField
+                    control={form.control}
+                    name="cipherOutputFileName"
+                    render={({ field }) => (
+                        <FormItem>
+                            <FormLabel>Cipher Output File Name</FormLabel>
+                            <FormControl>
+                                <Input placeholder="Cipher Output File Name" {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>
