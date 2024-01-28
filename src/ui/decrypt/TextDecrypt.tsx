@@ -4,7 +4,6 @@ import { Separator } from "@/components/ui/separator";
 import { useTextCipher } from "@/hooks/useTextCipher";
 import { parseStdOut } from "@/lib/parse";
 import { RUNNING_IN_TAURI } from "@/lib/utils";
-import { PyMessageIdentifier } from "@/types/event";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
@@ -21,7 +20,7 @@ const TextDecrypt = memo(() => {
             console.log('Received event:', event.payload);
 
             const splitPayload = event.payload.split('-splitter');
-            if (splitPayload[0] === PyMessageIdentifier.ResultTextDecrypt) {
+            if (splitPayload[0] === CryptoFormType.TextDecrypt) {
                 type TextDecryptResult = {
                     "decrypt_values": number[],
                     "cipher_values": number[],

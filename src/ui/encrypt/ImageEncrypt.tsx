@@ -3,11 +3,10 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 // import { parseStdOut } from "@/lib/parse";
 import { RUNNING_IN_TAURI } from "@/lib/utils";
-import { PyMessageIdentifier } from "@/types/event";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
-// import { convertFileSrc } from "@tauri-apps/api/tauri";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
 
 const ImageEncrypt = memo(() => {
     useEffect(() => {
@@ -20,7 +19,7 @@ const ImageEncrypt = memo(() => {
             console.log('Received event:', event.payload);
 
             const splitPayload = event.payload.split('-splitter');
-            if (splitPayload[0] === PyMessageIdentifier.ResultImageEncrypt) {
+            if (splitPayload[0] === CryptoFormType.ImageEncrypt) {
                 // type ImageEncryptResult = {
                 //     key_results: number[],
                 //     original_values: number[],
@@ -73,12 +72,30 @@ const ImageEncrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 Plain Image:
                             </p>
-                            {/* <img src={convertFileSrc("C:\Users\yato\Pictures\animegirl wallpaper.png")} alt="" /> */}
+                            {RUNNING_IN_TAURI && <img className="p-8 max-h-96 max-w-96" src={convertFileSrc("C:\\Users\\yato\\Pictures\\animegirl wallpaper.png")} alt="" />}
                         </div>
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
                                 Cipher Image:
                             </p>
+                            {
+                                RUNNING_IN_TAURI &&
+                                <video className="p-8 max-h-96 max-w-96" controls>
+                                    <source src={convertFileSrc("D:\\Game highlights\\Highlights\\3deagl.mp4")} />
+                                </video>
+                            }
+                        </div>
+                        <div className="flex gap-1">
+                            <p className="text-sm text-nowrap text-green-300">
+                                Cipher Image:
+                            </p>
+                            {
+                                RUNNING_IN_TAURI &&
+                                <audio controls>
+                                    <source src={convertFileSrc("C:\\Users\\yato\\Desktop\\Stunning Sunset Seen From The Sea  Time lapse  10 Seconds Video  Nature Blogs.mp3")} type="audio/mpeg" />
+                                    Your browser does not support the audio element.
+                                </audio>
+                            }
                         </div>
                     </div>
                 </div>

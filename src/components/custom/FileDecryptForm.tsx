@@ -41,7 +41,10 @@ function FileDecryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
 
         switch (formType) {
             case CryptoFormType.ImageDecrypt:
-                // await encryptText(data.input);
+                break;
+            case CryptoFormType.VideoDecrypt:
+                break;
+            case CryptoFormType.AudioDecrypt:
                 break;
             default:
                 break;

@@ -92,7 +92,7 @@ def main():
                 key=args.key, plain_text=args.input, c1=args.c1, c2=args.c2, y1=args.y1, y2=args.y2, y1_prime=args.y1_prime, y2_prime=args.y2_prime)
 
             # This print will be used to get the result from subprocess
-            print("result-text-encrypt-splitter", {
+            print("text-encrypt-splitter", {
                 "key_results": key_results,
                 "original_values": original_values,
                 "cipher_values": cipher_values,
@@ -115,7 +115,7 @@ def main():
             cvt = CipherVerseText()
             decrypt_values, decrypted_text, cipher_values = cvt.decrypt(cipher_text=args.input, c1_prime=args.c1_prime,
                                          c2_prime=args.c2_prime, y1_prime=args.y1_prime, y2_prime=args.y2_prime)
-            print("result-text-decrypt-splitter", {
+            print("text-decrypt-splitter", {
                 "decrypt_values": decrypt_values,
                 "cipher_values": cipher_values,
             })

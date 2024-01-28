@@ -3,7 +3,6 @@ import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 // import { parseStdOut } from "@/lib/parse";
 import { RUNNING_IN_TAURI } from "@/lib/utils";
-import { PyMessageIdentifier } from "@/types/event";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
@@ -20,7 +19,7 @@ const ImageDecrypt = memo(() => {
             console.log('Received event:', event.payload);
 
             const splitPayload = event.payload.split('-splitter');
-            if (splitPayload[0] === PyMessageIdentifier.ResultImageDecrypt) {
+            if (splitPayload[0] === CryptoFormType.ImageDecrypt) {
                 // type ImageDecryptResult = {
                 //     key_results: number[],
                 //     original_values: number[],

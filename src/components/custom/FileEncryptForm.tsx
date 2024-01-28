@@ -37,7 +37,10 @@ function FileEncryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
 
         switch (formType) {
             case CryptoFormType.ImageEncrypt:
-                // await encryptText(data.input);
+                break;
+            case CryptoFormType.VideoEncrypt:
+                break;
+            case CryptoFormType.AudioEncrypt:
                 break;
             default:
                 break;
