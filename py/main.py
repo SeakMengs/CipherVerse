@@ -82,25 +82,42 @@ def main():
                               help='The output video file path.')
     video_parser.add_argument('-key', '-k', type=str,
                               help='The key to use for encryption/decryption.')
-
+    video_parser.add_argument('-c1', type=float,
+                             help='The c1 value to use for encryption/decryption.')
+    video_parser.add_argument('-c2', type=float,
+                             help='The c2 value to use for encryption/decryption.')
+    video_parser.add_argument('-y1', type=float,
+                             help='The y1 value to use for encryption/decryption.')
+    video_parser.add_argument('-y2', type=float,
+                             help='The y2 value to use for encryption/decryption.')
+    video_parser.add_argument('-y1_prime', type=float,
+                             help='The y1_prime value to use for encryption/decryption.')
+    video_parser.add_argument('-y2_prime', type=float,
+                             help='The y2_prime value to use for encryption/decryption.')
+    video_parser.add_argument('-c1_prime', type=float,
+                             help='The c1_prime value to use for encryption/decryption.')
+    video_parser.add_argument('-c2_prime', type=float,
+                             help='The c2_prime value to use for encryption/decryption.')
+    
     args = parser.parse_args()
 
     if args.type == 'encrypt':
         if args.command == 'text':
             cvt = CipherVerseText()
-            key_results, original_values, cipher_values, cipher_text = cvt.encrypt(
+            key_results, original_values, cipher_values, cipher_text, success = cvt.encrypt(
                 key=args.key, plain_text=args.input, c1=args.c1, c2=args.c2, y1=args.y1, y2=args.y2, y1_prime=args.y1_prime, y2_prime=args.y2_prime)
 
             # This print will be used to get the result from subprocess
             print("text-encrypt-splitter", {
-                "key_results": key_results,
-                "original_values": original_values,
-                "cipher_values": cipher_values,
+                "keyResults": key_results,
+                "originalValues": original_values,
+                "cipherValues": cipher_values,
+                "success": success,
             })
-
             # decrypt_values, decrypted_text, cipher_values= cvt.decrypt(
             #     cipher_text=cipher_text, c1_prime=key_results[14], c2_prime=key_results[15], y1_prime=args.y1_prime, y2_prime=args.y2_prime)
             # print("Decrypted text: ", decrypted_text)
+            return
         elif args.command == 'audio':
             cva = CipherVerseAudio(args.input, args.output, args.key)
             cva.encrypt()
@@ -109,17 +126,25 @@ def main():
             cvi.encrypt()
         elif args.command == 'video':
             cvv = CipherVerseVideo(args.input, args.output, args.key)
-            cvv.encrypt()
+            plain_video_path, cipher_video_output_path, key_results, success = cvv.encrypt(args.key, args.input, args.output, args.c1, args.c2, args.y1, args.y2, args.y1_prime, args.y2_prime)
+            print("video-encrypt-splitter", {
+                "plainVideoFilePath": plain_video_path,
+                "cipherVideoOutputFilePath": cipher_video_output_path,
+                "keyResults": key_results,
+                "success": success,
+            })
+            return
     elif args.type == 'decrypt':
         if args.command == 'text':
             cvt = CipherVerseText()
-            decrypt_values, decrypted_text, cipher_values = cvt.decrypt(cipher_text=args.input, c1_prime=args.c1_prime,
+            decrypt_values, decrypted_text, cipher_values, success = cvt.decrypt(cipher_text=args.input, c1_prime=args.c1_prime,
                                          c2_prime=args.c2_prime, y1_prime=args.y1_prime, y2_prime=args.y2_prime)
             print("text-decrypt-splitter", {
-                "decrypt_values": decrypt_values,
-                "cipher_values": cipher_values,
+                "decryptValues": decrypt_values,
+                "cipherValues": cipher_values,
+                "success": success,
             })
-
+            return
         elif args.command == 'audio':
             cva = CipherVerseAudio(args.input, args.output, args.key)
             cva.decrypt()
@@ -127,8 +152,8 @@ def main():
             cvi = CipherVerseImage(args.input, args.output, args.key)
             cvi.decrypt()
         elif args.command == 'video':
-            cvv = CipherVerseVideo(args.input, args.output, args.key)
-            cvv.decrypt()
+            cvv = CipherVerseVideo()
+            cvv.encrypt(args.key, args.input, args.output, args.c1, args.c2, args.y1, args.y2, args.y1_prime, args.y2_prime)
 
 
 # run local

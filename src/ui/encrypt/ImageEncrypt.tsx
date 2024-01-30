@@ -1,14 +1,19 @@
 import FileEncryptForm from "@/components/custom/FileEncryptForm";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-// import { parseStdOut } from "@/lib/parse";
-import { RUNNING_IN_TAURI } from "@/lib/utils";
+import { parseStdOut } from "@/lib/parse";
+import { RUNNING_IN_TAURI, isSideCarReady } from "@/lib/utils";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
 import { convertFileSrc } from "@tauri-apps/api/tauri";
+import { useFileCipher } from "@/hooks/useFileCipher";
+import { useToast } from "@/components/ui/use-toast";
 
 const ImageEncrypt = memo(() => {
+    const { fileEncrypted, setFileEncrypted } = useFileCipher();
+    const { toast } = useToast();
+
     useEffect(() => {
         if (!RUNNING_IN_TAURI) {
             console.log('Not running in tauri, skipping event listener');
@@ -18,22 +23,31 @@ const ImageEncrypt = memo(() => {
         const unlisten = listen<string>('cipher_verse_message', (event) => {
             console.log('Received event:', event.payload);
 
-            const splitPayload = event.payload.split('-splitter');
-            if (splitPayload[0] === CryptoFormType.ImageEncrypt) {
-                // type ImageEncryptResult = {
-                //     key_results: number[],
-                //     original_values: number[],
-                //     cipher_values: number[],
-                // }
+            const { sideCarReady, stdout } = isSideCarReady(event.payload, CryptoFormType.ImageEncrypt);
+            if (sideCarReady) {
+                type ImageEncryptResult = {
+                    keyResults: number[],
+                    plainImageFilePath: string,
+                    cipherImageOutputFilePath: string,
+                    success: boolean,
+                }
 
-                // const result = parseStdOut<ImageEncryptResult>(splitPayload[1]);
+                const result = parseStdOut<ImageEncryptResult>(stdout);
 
-                // setImageEncrypted({
-                //     cipherText: result.cipher_values.map((v) => String.fromCharCode(v)).join(''),
-                //     plainText: result.original_values.map((v) => String.fromCharCode(v)).join(''),
-                //     c1Prime: result.key_results[14],
-                //     c2Prime: result.key_results[15],
-                // })
+                if (!result.success) {
+                    toast({
+                        title: 'Error',
+                        description: 'An error occurred while encrypting the image',
+                    });
+                    return;
+                }
+
+                setFileEncrypted({
+                    plainInputFilePath: result.plainImageFilePath,
+                    cipherOutputFilePath: result.cipherImageOutputFilePath,
+                    c1Prime: result.keyResults[14],
+                    c2Prime: result.keyResults[15],
+                })
             }
         });
 
@@ -57,7 +71,7 @@ const ImageEncrypt = memo(() => {
                                 C1:
                             </p>
                             <p className="text-sm">
-                                {/* {imageEncrypted.c1Prime} */}
+                                {fileEncrypted.c1Prime}
                             </p>
                         </div>
                         <div className="flex gap-1">
@@ -65,37 +79,30 @@ const ImageEncrypt = memo(() => {
                                 C2:
                             </p>
                             <p className="text-sm">
-                                {/* {imageEncrypted.c2Prime} */}
+                                {fileEncrypted.c2Prime}
                             </p>
                         </div>
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                Plain Image:
+                                {`Plain Image: ${fileEncrypted.plainInputFilePath}`}
                             </p>
-                            {RUNNING_IN_TAURI && <img className="p-8 max-h-96 max-w-96" src={convertFileSrc("C:\\Users\\yato\\Pictures\\animegirl wallpaper.png")} alt="" />}
+                            <div className="">
+                                {
+                                    (RUNNING_IN_TAURI && fileEncrypted.plainInputFilePath) &&
+                                    <img className="p-8 max-h-96 max-w-96" src={convertFileSrc(fileEncrypted.plainInputFilePath)} alt="Image" />
+                                }
+                            </div>
                         </div>
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                Cipher Image:
+                                {`Cipher Image: ${fileEncrypted.cipherOutputFilePath}`}
                             </p>
-                            {
-                                RUNNING_IN_TAURI &&
-                                <video className="p-8 max-h-96 max-w-96" controls>
-                                    <source src={convertFileSrc("D:\\Game highlights\\Highlights\\3deagl.mp4")} />
-                                </video>
-                            }
-                        </div>
-                        <div className="flex gap-1">
-                            <p className="text-sm text-nowrap text-green-300">
-                                Cipher Image:
-                            </p>
-                            {
-                                RUNNING_IN_TAURI &&
-                                <audio controls>
-                                    <source src={convertFileSrc("C:\\Users\\yato\\Desktop\\Stunning Sunset Seen From The Sea  Time lapse  10 Seconds Video  Nature Blogs.mp3")} type="audio/mpeg" />
-                                    Your browser does not support the audio element.
-                                </audio>
-                            }
+                            <div className="">
+                                {
+                                    (RUNNING_IN_TAURI && fileEncrypted.cipherOutputFilePath) &&
+                                    <img className="p-8 max-h-96 max-w-96" src={convertFileSrc(fileEncrypted.cipherOutputFilePath)} alt="Image" />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>

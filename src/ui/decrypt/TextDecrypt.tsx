@@ -1,15 +1,18 @@
 import TextDecryptForm from "@/components/custom/TextDecryptForm";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import { useTextCipher } from "@/hooks/useTextCipher";
 import { parseStdOut } from "@/lib/parse";
-import { RUNNING_IN_TAURI } from "@/lib/utils";
+import { RUNNING_IN_TAURI, isSideCarReady } from "@/lib/utils";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
 
 const TextDecrypt = memo(() => {
     const { textDecrypted, setTextDecrypted } = useTextCipher();
+    const { toast } = useToast();
+
     useEffect(() => {
         if (!RUNNING_IN_TAURI) {
             console.log('Not running in tauri, skipping event listener');
@@ -19,18 +22,27 @@ const TextDecrypt = memo(() => {
         const unlisten = listen<string>('cipher_verse_message', (event) => {
             console.log('Received event:', event.payload);
 
-            const splitPayload = event.payload.split('-splitter');
-            if (splitPayload[0] === CryptoFormType.TextDecrypt) {
+            const { sideCarReady, stdout } = isSideCarReady(event.payload, CryptoFormType.TextDecrypt);
+            if (sideCarReady) {
                 type TextDecryptResult = {
-                    "decrypt_values": number[],
-                    "cipher_values": number[],
+                    decryptValues: number[],
+                    cipherValues: number[],
+                    success: boolean,
                 }
 
-                const result = parseStdOut<TextDecryptResult>(splitPayload[1]);
+                const result = parseStdOut<TextDecryptResult>(stdout);
+
+                if (!result.success) {
+                    toast({
+                        title: 'Error',
+                        description: 'An error occurred while decrypting the text',
+                    });
+                    return;
+                }
 
                 setTextDecrypted({
-                    plainText: result.decrypt_values.map((v) => String.fromCharCode(v)).join(''),
-                    cipherText: result.cipher_values.map((v) => String.fromCharCode(v)).join(''),
+                    plainText: result.decryptValues.map((v) => String.fromCharCode(v)).join(''),
+                    cipherText: result.cipherValues.map((v) => String.fromCharCode(v)).join(''),
                 })
             }
         });

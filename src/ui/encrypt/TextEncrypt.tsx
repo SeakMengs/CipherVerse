@@ -1,15 +1,17 @@
 import TextEncryptForm from "@/components/custom/TextEncryptForm";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useToast } from "@/components/ui/use-toast";
 import { useTextCipher } from "@/hooks/useTextCipher";
 import { parseStdOut } from "@/lib/parse";
-import { RUNNING_IN_TAURI } from "@/lib/utils";
+import { RUNNING_IN_TAURI, isSideCarReady } from "@/lib/utils";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
 
 const TextEncrypt = memo(() => {
     const { textEncrypted, setTextEncrypted } = useTextCipher();
+    const { toast } = useToast();
 
     useEffect(() => {
         if (!RUNNING_IN_TAURI) {
@@ -20,21 +22,30 @@ const TextEncrypt = memo(() => {
         const unlisten = listen<string>('cipher_verse_message', (event) => {
             console.log('Received event:', event.payload);
 
-            const splitPayload = event.payload.split('-splitter');
-            if (splitPayload[0] === CryptoFormType.TextEncrypt) {
+            const { sideCarReady, stdout } = isSideCarReady(event.payload, CryptoFormType.TextEncrypt);
+            if (sideCarReady) {
                 type TextEncryptResult = {
-                    key_results: number[],
-                    original_values: number[],
-                    cipher_values: number[],
+                    keyResults: number[],
+                    originalValues: number[],
+                    cipherValues: number[],
+                    success: boolean,
                 }
 
-                const result = parseStdOut<TextEncryptResult>(splitPayload[1]);
+                const result = parseStdOut<TextEncryptResult>(stdout);
+
+                if (!result.success) {
+                    toast({
+                        title: 'Error',
+                        description: 'An error occurred while encrypting the text',
+                    });
+                    return;
+                }
 
                 setTextEncrypted({
-                    cipherText: result.cipher_values.map((v) => String.fromCharCode(v)).join(''),
-                    plainText: result.original_values.map((v) => String.fromCharCode(v)).join(''),
-                    c1Prime: result.key_results[14],
-                    c2Prime: result.key_results[15],
+                    cipherText: result.cipherValues.map((v) => String.fromCharCode(v)).join(''),
+                    plainText: result.originalValues.map((v) => String.fromCharCode(v)).join(''),
+                    c1Prime: result.keyResults[14],
+                    c2Prime: result.keyResults[15],
                 })
             }
         });

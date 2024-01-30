@@ -7,7 +7,9 @@ import { Button } from "@/components/ui/button";
 import { CryptoFormType } from "@/types/form";
 import { IconFile } from "@tabler/icons-react";
 import { open } from "@tauri-apps/api/dialog";
-import { RUNNING_IN_TAURI } from "@/lib/utils";
+import { RUNNING_IN_TAURI, separateFolderAndFile } from "@/lib/utils";
+import { encryptAudio, encryptImage, encryptVideo } from "@/lib/crypto";
+import { useFileCipher } from "@/hooks/useFileCipher";
 
 type FileEncryptFormProps = {
     formType: CryptoFormType,
@@ -17,18 +19,22 @@ type FileEncryptFormProps = {
 }
 
 function FileEncryptForm({ formType, inputLabel, outputLabel, submitCallback }: FileEncryptFormProps) {
+    const { fileEncrypted } = useFileCipher();
+
     const fileEncryptForm = z.object({
         plainInputFilePath: z.string().min(1),
         cipherOutputFolderPath: z.string().min(1),
         cipherOutputFileName: z.string().min(1),
     })
 
+    const { folderPath: cipherOutputFolderPath, fileName: cipherOutputFileName } = separateFolderAndFile(fileEncrypted.cipherOutputFilePath ?? "");
+
     const form = useForm<z.infer<typeof fileEncryptForm>>({
         resolver: zodResolver(fileEncryptForm),
         defaultValues: {
-            plainInputFilePath: "",
-            cipherOutputFolderPath: "",
-            cipherOutputFileName: "",
+            plainInputFilePath: fileEncrypted.plainInputFilePath ?? "",
+            cipherOutputFolderPath: cipherOutputFolderPath ?? "",
+            cipherOutputFileName: cipherOutputFileName ?? "",
         }
     })
 
@@ -37,10 +43,15 @@ function FileEncryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
 
         switch (formType) {
             case CryptoFormType.ImageEncrypt:
+                // TODO: implement image encryption
+                await encryptImage();
                 break;
             case CryptoFormType.VideoEncrypt:
+                await encryptVideo(data.plainInputFilePath, data.cipherOutputFolderPath, data.cipherOutputFileName);
                 break;
             case CryptoFormType.AudioEncrypt:
+                // TODO: implement audio encryption
+                await encryptAudio();
                 break;
             default:
                 break;

@@ -8,6 +8,8 @@ import { CryptoFormType } from "@/types/form";
 import { IconFile } from "@tabler/icons-react";
 import { open } from "@tauri-apps/api/dialog";
 import { RUNNING_IN_TAURI } from "@/lib/utils";
+import { useFileCipher } from "@/hooks/useFileCipher";
+import { decryptAudio, decryptImage, decryptVideo } from "@/lib/crypto";
 
 type FileDecryptFormProps = {
     formType: CryptoFormType,
@@ -17,6 +19,8 @@ type FileDecryptFormProps = {
 }
 
 function FileDecryptForm({ formType, inputLabel, outputLabel, submitCallback }: FileDecryptFormProps) {
+    const { fileEncrypted } = useFileCipher();
+
     const fileDecryptForm = z.object({
         cipherInputFilePath: z.string().min(1),
         plainOutputFolderPath: z.string().min(1),
@@ -28,11 +32,11 @@ function FileDecryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
     const form = useForm<z.infer<typeof fileDecryptForm>>({
         resolver: zodResolver(fileDecryptForm),
         defaultValues: {
-            cipherInputFilePath: "",
+            cipherInputFilePath: fileEncrypted.cipherOutputFilePath ?? "",
             plainOutputFolderPath: "",
             plainOutputFileName: "",
-            c1_prime: 0,
-            c2_prime: 0,
+            c1_prime: fileEncrypted.c1Prime ?? 0,
+            c2_prime: fileEncrypted.c2Prime ?? 0,
         }
     })
 
@@ -41,10 +45,16 @@ function FileDecryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
 
         switch (formType) {
             case CryptoFormType.ImageDecrypt:
+                // TODO: implement image decryption
+                await decryptImage();
                 break;
             case CryptoFormType.VideoDecrypt:
+                // TODO: implement video decryption
+                await decryptVideo();
                 break;
             case CryptoFormType.AudioDecrypt:
+                // TODO: implement audio decryption
+                await decryptAudio();
                 break;
             default:
                 break;

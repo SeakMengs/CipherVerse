@@ -53,7 +53,8 @@ class CipherVerseText:
             # encoded_char = chr(round(y_n))
             cipher_text += encoded_char
 
-        return key_results, original_values, cipher_values, cipher_text
+        success = 1
+        return key_results, original_values, cipher_values, cipher_text, success
 
     def decrypt(self, cipher_text, c1_prime, c2_prime, y1_prime, y2_prime):
         decrypt_values = []
@@ -73,4 +74,5 @@ class CipherVerseText:
             encoded_char = chr(x_n)
             decrypted_text += encoded_char
 
-        return decrypt_values, decrypted_text, cipher_values
+        success = 1
+        return decrypt_values, decrypted_text, cipher_values, success

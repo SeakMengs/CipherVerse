@@ -1,14 +1,19 @@
 import FileDecryptForm from "@/components/custom/FileDecryptForm";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
-// import { parseStdOut } from "@/lib/parse";
-import { RUNNING_IN_TAURI } from "@/lib/utils";
+import { parseStdOut } from "@/lib/parse";
+import { RUNNING_IN_TAURI, isSideCarReady } from "@/lib/utils";
 import { CryptoFormType } from "@/types/form";
 import { listen } from "@tauri-apps/api/event";
 import { memo, useEffect } from "react";
-// import { convertFileSrc } from "@tauri-apps/api/tauri";
+import { convertFileSrc } from "@tauri-apps/api/tauri";
+import { useFileCipher } from "@/hooks/useFileCipher";
+import { useToast } from "@/components/ui/use-toast";
 
 const ImageDecrypt = memo(() => {
+    const { fileDecrypted, setFileDecrypted } = useFileCipher();
+    const { toast } = useToast();
+
     useEffect(() => {
         if (!RUNNING_IN_TAURI) {
             console.log('Not running in tauri, skipping event listener');
@@ -18,22 +23,28 @@ const ImageDecrypt = memo(() => {
         const unlisten = listen<string>('cipher_verse_message', (event) => {
             console.log('Received event:', event.payload);
 
-            const splitPayload = event.payload.split('-splitter');
-            if (splitPayload[0] === CryptoFormType.ImageDecrypt) {
-                // type ImageDecryptResult = {
-                //     key_results: number[],
-                //     original_values: number[],
-                //     cipher_values: number[],
-                // }
+            const { sideCarReady, stdout } = isSideCarReady(event.payload, CryptoFormType.ImageDecrypt);
+            if (sideCarReady) {
+                type ImageDecryptResult = {
+                    cipherVideoFilePath: string,
+                    plainVideoOutputPath: string,
+                    success: boolean,
+                }
 
-                // const result = parseStdOut<ImageDecryptResult>(splitPayload[1]);
+                const result = parseStdOut<ImageDecryptResult>(stdout);
 
-                // setImageDecrypted({
-                //     cipherText: result.cipher_values.map((v) => String.fromCharCode(v)).join(''),
-                //     plainText: result.original_values.map((v) => String.fromCharCode(v)).join(''),
-                //     c1Prime: result.key_results[14],
-                //     c2Prime: result.key_results[15],
-                // })
+                if (!result.success) {
+                    toast({
+                        title: 'Error',
+                        description: 'An error occurred while decrypting the image',
+                    });
+                    return;
+                }
+
+                setFileDecrypted({
+                    cipherInputFilePath: result.cipherVideoFilePath,
+                    plainOutputFilePath: result.plainVideoOutputPath,
+                })
             }
         });
 
@@ -54,14 +65,25 @@ const ImageDecrypt = memo(() => {
                     <div className="text-wrap">
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                Plain Image:
+                                {`Cipher Image: ${fileDecrypted.cipherInputFilePath}`}
                             </p>
-                            {/* <img src={convertFileSrc("C:\Users\yato\Pictures\animegirl wallpaper.png")} alt="" /> */}
+                            <div className="">
+                                {
+                                    (RUNNING_IN_TAURI && fileDecrypted.cipherInputFilePath) &&
+                                    <img className="p-8 max-h-96 max-w-96" src={convertFileSrc(fileDecrypted.cipherInputFilePath)} alt="Image" />
+                                }
+                            </div>
                         </div>
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                Cipher Image:
+                                {`Plain Image: ${fileDecrypted.plainOutputFilePath}`}
                             </p>
+                            <div className="">
+                                {
+                                    (RUNNING_IN_TAURI && fileDecrypted.plainOutputFilePath) &&
+                                    <img className="p-8 max-h-96 max-w-96" src={convertFileSrc(fileDecrypted.plainOutputFilePath)} alt="Image" />
+                                }
+                            </div>
                         </div>
                     </div>
                 </div>
