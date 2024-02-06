@@ -160,4 +160,25 @@ def main():
 # python main.py --help to see the usage of the script
 if __name__ == '__main__':
     print("Starting CipherVerse...")
-    main()
+    # main()
+    
+    debug = True
+    
+    if debug:
+        cvt = CipherVerseText()
+        # input = "ÿÿÿ"
+        input = "abdsadsadasdd"
+        key = "adabefgbfjklmnop"
+        y1_prime = 0.4
+        y2_prime = 0.4
+        c1 = -0.3
+        c2 = 0.3
+        y1 =  0.492
+        y2 = -0.133
+        
+        key_results, original_values, cipher_values, cipher_text, success = cvt.encrypt(key = key, plain_text = input, c1 = c1, c2 = c2, y1 = y1, y2 = y2, y1_prime = y1_prime, y2_prime = y2_prime)
+        print(f"Input: {input}")
+        print(f"Cipher Text: {cipher_text}")
+        print(f"C1_prim {key_results[14]}, C2_prim {key_results[15]}")
+        decrypt_values, decrypted_text, cipher_values, success = cvt.decrypt(cipher_text = cipher_text, c1_prime = key_results[14], c2_prime = key_results[15], y1_prime = y1_prime, y2_prime = y2_prime)
+        print(f"Decrypted Text: {decrypted_text}")

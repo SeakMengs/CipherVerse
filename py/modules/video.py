@@ -28,7 +28,7 @@ class CipherVerseVideo:
         
         # Create a VideoWriter object to save the output
         # https://stackoverflow.com/questions/30103077/what-is-the-codec-for-mp4-videos-in-python-opencv
-        fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+        fourcc = cv2.VideoWriter_fourcc(*'avc1')
         output_video = cv2.VideoWriter(cipher_video_output_path, fourcc, fps, (width, height))
         
         while cap.isOpened():

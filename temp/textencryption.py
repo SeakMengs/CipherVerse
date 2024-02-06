@@ -119,6 +119,6 @@ def text_decryption(c1_prim, c2_prim, y1, y2, encrypt_text):
     print("DECRYPTED TEXT: " + decrypt_text)
     return decrypt_text
 
-text_decryption(c1_input, c2_input, y1_input, y2_input, text_encryption(c1_input, c2_input, y1_input, y2_input, "Katie, Lengy and Nary are crazy people."))      
+text_decryption(c1_input, c2_input, y1_input, y2_input, text_encryption(c1_input, c2_input, y1_input, y2_input, "aa"))      
     
 

@@ -6,8 +6,26 @@ class CipherVerseText:
     def __y_equation(self, x, c1_, c2_, y1_, y2_):
         return self.__f(x + c1_ * y1_ + c2_ * y2_)
 
-    def encrypt(self, key, plain_text, c1, c2, y1, y2, y1_prime, y2_prime):
+    def __x_equation(self, y, c1_, c2_, y1_, y2_):
+        return self.__f(y - c1_ * y1_ - c2_ * y2_)
+
+    def __normalize(self, value) -> float:
+        return (value - 128) / 128
+
+    def __denormalize(self, value) -> float:
+        return round((value * 128) + 128)
+
+    def __key_stream(self, key, c1, c2, y1, y2):
         key_results = []
+        y = [y1, y2]
+        for i in range(len(key)):
+            y_n = self.__y_equation(ord(key[i]), c1, c2, y[0], y[1])
+            key_results.append(y_n)
+            y[1], y[0] = y[0], y_n
+        return key_results
+
+    def encrypt(self, key, plain_text, c1, c2, y1, y2, y1_prime, y2_prime):
+        key_results = self.__key_stream(key, c1, c2, y1, y2)
         original_values = []
         cipher_values = []
         cipher_text = ""
@@ -18,31 +36,28 @@ class CipherVerseText:
         if len(plain_text) < 1:
             raise ValueError("Plain text must not be empty")
 
-        # key stream operation
-        y = [y1, y2]
-        for i in range(len(key)):
-            y_n = self.__y_equation(ord(key[i]), c1, c2, y[0], y[1])
-            key_results.append(y_n)
-            y[1], y[0] = y[0], y_n
-
         c1_prime, c2_prime = key_results[14], key_results[15]
 
-        # encryption operation
+        # Encryption operation
         y = [y1_prime, y2_prime]
-        for i in range(len(plain_text)):
-            original_values.append(ord(plain_text[i]))
-            y_n = round(ord(plain_text[i]) + c1_prime * y[0] + c2_prime * y[1])
-            # y_n = ((ord(plain_text[i]) - 128) / 128) + c1_prime * y[0] + c2_prime * y[1]
-            # print("round:", ((ord(plain_text[i]) - 128) / 128))
-            # y_n = ord(plain_text[i]) + c1_prime * y[0] + c2_prime * y[1]
-            # print(y_n)
-            cipher_values.append(y_n)
+        for char in plain_text:
+            original_values.append(ord(char))
 
-            y[1], y[0] = y[0], y_n
+            # Normalize and encrypt
+            normalized_value = self.__normalize(ord(char))
+            encrypted_value = self.__y_equation(
+                normalized_value, c1_prime, c2_prime, y[0], y[1])
+            encrypted_value_normalized = self.__normalize(
+                self.__denormalize(encrypted_value))
 
-            encoded_char = chr(y_n)
-            # encoded_char = chr(round(y_n))
-            cipher_text += encoded_char
+            # Update y
+            y[1], y[0] = y[0], encrypted_value_normalized
+
+            # Append to cipher text
+            cipher_values.append(self.__denormalize(
+                encrypted_value_normalized))
+            # since we update cipher_values, we can just append the last value
+            cipher_text += chr(cipher_values[-1])
 
         success = 1
         return key_results, original_values, cipher_values, cipher_text, success
@@ -50,23 +65,31 @@ class CipherVerseText:
     def decrypt(self, cipher_text, c1_prime, c2_prime, y1_prime, y2_prime):
         decrypt_values = []
         decrypted_text = ""
-        # not important
+        # not important (this is just for frontend because passing the cipher text will give error)
         cipher_values = [ord(char) for char in cipher_text]
 
-        # decryption operation
+        if len(cipher_text) < 1:
+            raise ValueError("Cipher text must not be empty")
+
+        # Decryption operation
         y = [y1_prime, y2_prime]
-        for i in range(len(cipher_text)):
-            x_n = round(ord(cipher_text[i]) -
-                        c1_prime * y[0] - c2_prime * y[1])
-            decrypt_values.append(x_n)
+        for cipher_char in cipher_text:
+            # Normalize and decrypt
+            normalized_value = self.__normalize(ord(cipher_char))
+            decrypted_value = self.__x_equation(
+                normalized_value, c1_prime, c2_prime, y[0], y[1])
 
-            y[1], y[0] = y[0], ord(cipher_text[i])
+            # Update y
+            y[1], y[0] = y[0], decrypted_value
 
-            encoded_char = chr(x_n)
-            decrypted_text += encoded_char
+            # Append to decrypted values
+            decrypt_values.append(self.__denormalize(decrypted_value))
+            # since we update decrypt_values, we can just append the last value
+            decrypted_text += chr(decrypt_values[-1])
 
         success = 1
         return decrypt_values, decrypted_text, cipher_values, success
+
 # class CipherVerseText:
 #     def __init__(self) -> None:
 #         self.debug = False
