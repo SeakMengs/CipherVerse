@@ -58,7 +58,7 @@ const AudioEncrypt = memo(() => {
 
     return (
         <>
-            <div className="w-full h-[full] m-auto flex flex-col px-5">
+            <div className="w-full temp-max-w-screen-md m-auto flex flex-col px-5">
                 <div className="p-6">
                     <FileEncryptForm formType={CryptoFormType.AudioEncrypt} />
                     <Separator className="my-3" />
@@ -70,7 +70,7 @@ const AudioEncrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 C1:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {fileEncrypted.c1Prime}
                             </p>
                         </div>
@@ -78,7 +78,7 @@ const AudioEncrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 C2:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {fileEncrypted.c2Prime}
                             </p>
                         </div>

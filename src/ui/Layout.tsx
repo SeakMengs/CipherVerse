@@ -55,7 +55,7 @@ const Layout = memo(({ children }: { children: React.ReactNode }) => {
                     </Dialog>
                 </div>
                 <div className="w-full h-[calc(100%-36px)] "> */}
-                <div className="w-full h-full ">
+                <div className="w-full h-full">
                     {children}
                 </div>
             </div>

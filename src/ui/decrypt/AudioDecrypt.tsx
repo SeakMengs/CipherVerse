@@ -55,7 +55,7 @@ const AudioDecrypt = memo(() => {
 
     return (
         <>
-            <div className="w-full h-[full] m-auto flex flex-col px-5">
+            <div className="w-full temp-max-w-screen-md m-auto flex flex-col px-5">
                 <div className="p-6">
                     <FileDecryptForm formType={CryptoFormType.AudioDecrypt} />
                     <Separator className="my-3" />

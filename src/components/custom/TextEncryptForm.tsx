@@ -2,11 +2,11 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { CryptoFormType } from "@/types/form";
 import { encryptText } from "@/lib/crypto";
 import { useTextCipher } from "@/hooks/useTextCipher";
+import { Textarea } from "../ui/textarea";
 
 type TextEncryptFormProps = {
     formType: CryptoFormType,
@@ -54,7 +54,7 @@ function TextEncryptForm({ formType, inputLabel, submitCallback }: TextEncryptFo
                         <FormItem>
                             <FormLabel>{inputLabel ?? "Input"}</FormLabel>
                             <FormControl>
-                                <Input placeholder={inputLabel ?? "Input"} {...field} />
+                                <Textarea placeholder={inputLabel ?? "Input"} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

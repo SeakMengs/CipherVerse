@@ -58,7 +58,7 @@ const Home = memo(() => {
 
     return (
         <>
-            <div className="overflow-y-auto h-full">
+            <div className="overflow-auto h-full">
                 <div className="w-full h-full m-auto flex flex-col px-5">
                     <div className="py-5">
                         <Card>

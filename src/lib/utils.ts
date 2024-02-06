@@ -38,7 +38,10 @@ export function isSideCarReady(payload: any, type: CryptoFormType): {
   }
 }
 
-export function separateFolderAndFile(path: string) {
+export function separateFolderAndFile(path: string): {
+  folderPath: string,
+  fileName: string
+} {
   // example "C:\\Users\\user\\Desktop\\test.mp4"
   const splitPath = path.split('\\');
   const fileName = splitPath[splitPath.length - 1];

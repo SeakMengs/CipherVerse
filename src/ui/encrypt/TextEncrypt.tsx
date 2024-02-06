@@ -57,10 +57,10 @@ const TextEncrypt = memo(() => {
 
     return (
         <>
-            <div className="w-full h-[full] m-auto flex flex-col px-5">
+            <div className="w-full temp-max-w-screen-md m-auto flex flex-col px-5">
                 <div className="p-6">
                     <TextEncryptForm inputLabel="Plain Text" formType={CryptoFormType.TextEncrypt} />
-                    <Separator className="my-3" />
+                    <Separator className="my-3 max-w" />
                     <div className="flex justify-center m-2">
                         <Label>Output</Label>
                     </div>
@@ -69,7 +69,7 @@ const TextEncrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 Plain Text:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {textEncrypted.plainText}
                             </p>
                         </div>
@@ -77,7 +77,7 @@ const TextEncrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 Cipher Text:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {textEncrypted.cipherText}
                             </p>
                         </div>
@@ -85,7 +85,7 @@ const TextEncrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 C1:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {textEncrypted.c1Prime}
                             </p>
                         </div>
@@ -93,7 +93,7 @@ const TextEncrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 C2:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {textEncrypted.c2Prime}
                             </p>
                         </div>

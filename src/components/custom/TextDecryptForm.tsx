@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { CryptoFormType } from "@/types/form";
 import { decryptText } from "@/lib/crypto";
 import { useTextCipher } from "@/hooks/useTextCipher";
+import { Textarea } from "../ui/textarea";
 
 type TextDecryptFormProps = {
     formType: CryptoFormType,
@@ -57,7 +58,7 @@ function TextDecryptForm({ formType, inputLabel, submitCallback }: TextDecryptFo
                         <FormItem>
                             <FormLabel>{inputLabel ?? "Input"}</FormLabel>
                             <FormControl>
-                                <Input placeholder={inputLabel ?? "Input"} {...field} />
+                                <Textarea placeholder={inputLabel ?? "Input"} {...field} />
                             </FormControl>
                             <FormMessage />
                         </FormItem>

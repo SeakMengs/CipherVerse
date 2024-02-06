@@ -54,7 +54,7 @@ const TextDecrypt = memo(() => {
 
     return (
         <>
-            <div className="w-full h-[full] m-auto flex flex-col px-5">
+            <div className="w-full temp-max-w-screen-md m-auto flex flex-col px-5">
                 <div className="p-6">
                     <TextDecryptForm inputLabel="Cipher Text" formType={CryptoFormType.TextDecrypt} />
                     <Separator className="my-3" />
@@ -66,7 +66,7 @@ const TextDecrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 Plain Text:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {textDecrypted.plainText}
                             </p>
                         </div>
@@ -74,7 +74,7 @@ const TextDecrypt = memo(() => {
                             <p className="text-sm text-nowrap text-green-300">
                                 Cipher Text:
                             </p>
-                            <p className="text-sm">
+                            <p className="text-sm break-words break-all">
                                 {textDecrypted.cipherText}
                             </p>
                         </div>
