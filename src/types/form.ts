@@ -9,3 +9,9 @@ export enum CryptoFormType {
     AudioEncrypt = 'audio-encrypt',
     AudioDecrypt = 'audio-decrypt',
 }
+
+export enum CryptoArgs {
+    Image = 'image',
+    Video = 'video',
+    Audio = 'audio',
+}

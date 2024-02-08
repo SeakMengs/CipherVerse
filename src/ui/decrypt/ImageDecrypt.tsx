@@ -26,8 +26,8 @@ const ImageDecrypt = memo(() => {
             const { sideCarReady, stdout } = isSideCarReady(event.payload, CryptoFormType.ImageDecrypt);
             if (sideCarReady) {
                 type ImageDecryptResult = {
-                    cipherVideoFilePath: string,
-                    plainVideoOutputPath: string,
+                    plainImageOutputPath: string,
+                    cipherImageFilePath: string,
                     success: boolean,
                 }
 
@@ -42,8 +42,8 @@ const ImageDecrypt = memo(() => {
                 }
 
                 setFileDecrypted({
-                    cipherInputFilePath: result.cipherVideoFilePath,
-                    plainOutputFilePath: result.plainVideoOutputPath,
+                    cipherInputFilePath: result.cipherImageFilePath,
+                    plainOutputFilePath: result.plainImageOutputPath,
                 })
             }
         });
@@ -65,7 +65,10 @@ const ImageDecrypt = memo(() => {
                     <div className="text-wrap">
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                {`Cipher Image: ${fileDecrypted.cipherInputFilePath}`}
+                                Cipher Image:
+                            </p>
+                            <p className="text-sm break-words break-all">
+                                {fileDecrypted.cipherInputFilePath}
                             </p>
                             <div className="">
                                 {
@@ -76,7 +79,10 @@ const ImageDecrypt = memo(() => {
                         </div>
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                {`Plain Image: ${fileDecrypted.plainOutputFilePath}`}
+                                Plain Image:
+                            </p>
+                            <p className="text-sm break-words break-all">
+                                {fileDecrypted.plainOutputFilePath}
                             </p>
                             <div className="">
                                 {

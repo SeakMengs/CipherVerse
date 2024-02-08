@@ -67,8 +67,8 @@
         "fullscreen": false,
         "resizable": true,
         "title": "cipher-verse",
-        "width": 695,
-        "height": 735
+        "width": 1024,
+        "height": 768
       }
     ]
   }

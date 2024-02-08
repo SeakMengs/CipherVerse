@@ -84,7 +84,10 @@ const ImageEncrypt = memo(() => {
                         </div>
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                {`Plain Image: ${fileEncrypted.plainInputFilePath}`}
+                                Plain Image:
+                            </p>
+                            <p className="text-sm break-words break-all">
+                                {fileEncrypted.plainInputFilePath}
                             </p>
                             <div className="">
                                 {
@@ -95,7 +98,10 @@ const ImageEncrypt = memo(() => {
                         </div>
                         <div className="flex gap-1">
                             <p className="text-sm text-nowrap text-green-300">
-                                {`Cipher Image: ${fileEncrypted.cipherOutputFilePath}`}
+                                Cipher Image:
+                            </p>
+                            <p className="text-sm break-words break-all">
+                                {fileEncrypted.cipherOutputFilePath}
                             </p>
                             <div className="">
                                 {

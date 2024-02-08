@@ -22,13 +22,13 @@ type TVariant = {
 
 const getVariantFromStorage = (): z.infer<typeof variantSchema> => {
     return {
-        c1: parseFloat(localStorage.getItem("c1") || "0"),
-        c2: parseFloat(localStorage.getItem("c2") || "0"),
-        y1: parseFloat(localStorage.getItem("y1") || "0"),
-        y2: parseFloat(localStorage.getItem("y2") || "0"),
-        y1_prime: parseFloat(localStorage.getItem("y1_prime") || "0"),
-        y2_prime: parseFloat(localStorage.getItem("y2_prime") || "0"),
-        key: localStorage.getItem("key") || "",
+        c1: parseFloat(localStorage.getItem("c1") || "0.5"),
+        c2: parseFloat(localStorage.getItem("c2") || "0.25"),
+        y1: parseFloat(localStorage.getItem("y1") || "0.25"),
+        y2: parseFloat(localStorage.getItem("y2") || "0.2"),
+        y1_prime: parseFloat(localStorage.getItem("y1_prime") || "0.99"),
+        y2_prime: parseFloat(localStorage.getItem("y2_prime") || "0.16"),
+        key: localStorage.getItem("key") || "asdbgffdmsestuiu",
     }
 }
 

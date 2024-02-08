@@ -4,11 +4,11 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CryptoFormType } from "@/types/form";
+import { CryptoArgs, CryptoFormType } from "@/types/form";
 import { IconFile } from "@tabler/icons-react";
 import { open } from "@tauri-apps/api/dialog";
 import { RUNNING_IN_TAURI, separateFolderAndFile } from "@/lib/utils";
-import { encryptAudio, encryptImage, encryptVideo } from "@/lib/crypto";
+import { encryptFile } from "@/lib/crypto";
 import { useFileCipher } from "@/hooks/useFileCipher";
 
 type FileEncryptFormProps = {
@@ -39,23 +39,23 @@ function FileEncryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
     })
 
     const onSubmit = async (data: z.infer<typeof fileEncryptForm>) => {
-        console.log("Submit from FileEncryptForm", data);
+        console.log(`Submit from FileEncryptForm type ${formType}`, data);
 
+        let type;
         switch (formType) {
             case CryptoFormType.ImageEncrypt:
-                // TODO: implement image encryption
-                await encryptImage();
+                type = CryptoArgs.Image;
                 break;
             case CryptoFormType.VideoEncrypt:
-                await encryptVideo(data.plainInputFilePath, data.cipherOutputFolderPath, data.cipherOutputFileName);
+                type = CryptoArgs.Video;
                 break;
             case CryptoFormType.AudioEncrypt:
-                // TODO: implement audio encryption
-                await encryptAudio();
+                type = CryptoArgs.Audio;
                 break;
             default:
                 break;
         }
+        await encryptFile(data.plainInputFilePath, data.cipherOutputFolderPath, data.cipherOutputFileName, type);
 
         if (typeof submitCallback !== "undefined") {
             submitCallback();

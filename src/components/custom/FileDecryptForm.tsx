@@ -4,12 +4,12 @@ import { z } from "zod";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { CryptoFormType } from "@/types/form";
+import { CryptoArgs, CryptoFormType } from "@/types/form";
 import { IconFile } from "@tabler/icons-react";
 import { open } from "@tauri-apps/api/dialog";
 import { RUNNING_IN_TAURI } from "@/lib/utils";
 import { useFileCipher } from "@/hooks/useFileCipher";
-import { decryptAudio, decryptImage, decryptVideo } from "@/lib/crypto";
+import { decryptFile } from "@/lib/crypto";
 
 type FileDecryptFormProps = {
     formType: CryptoFormType,
@@ -41,24 +41,24 @@ function FileDecryptForm({ formType, inputLabel, outputLabel, submitCallback }: 
     })
 
     const onSubmit = async (data: z.infer<typeof fileDecryptForm>) => {
-        console.log("Submit from FileDecryptForm", data);
+        console.log(`Submit from FileDecryptForm type ${formType}`, data);
 
+        let type;
         switch (formType) {
             case CryptoFormType.ImageDecrypt:
-                // TODO: implement image decryption
-                await decryptImage();
+                type = CryptoArgs.Image;
                 break;
             case CryptoFormType.VideoDecrypt:
-                // TODO: implement video decryption
-                await decryptVideo();
+                type = CryptoArgs.Video;
                 break;
             case CryptoFormType.AudioDecrypt:
-                // TODO: implement audio decryption
-                await decryptAudio();
+                type = CryptoArgs.Audio;
                 break;
             default:
                 break;
         }
+
+        await decryptFile(data.cipherInputFilePath, data.plainOutputFolderPath, data.plainOutputFileName, type, data.c1_prime, data.c2_prime);
 
         if (typeof submitCallback !== "undefined") {
             submitCallback();
