@@ -5,40 +5,29 @@ import numpy as np
 import os
 
 
-class CipherVerseImage(CipherVerseUtils):
-    def convert_extension_to_png(self, path):
-        # Split the file path into directory path, base filename, and extension
-        directory, file_name = os.path.split(path)
-        base, extension = os.path.splitext(file_name)
-        
-        # If the extension is already '.png', return the original path
-        if extension.lower() == '.png':
-            return path
-        
-        # Construct the new file path with '.png' extension
-        new_file_path = os.path.join(directory, base + '.png')
-        return new_file_path
-    
+class CipherVerseImage(CipherVerseUtils):    
     def encrypt(self, key, c1, c2, y1, y2, y1_prime, y2_prime, plain_image_path=None, cipher_image_output_path=None, frame=None, c1_prime=None, c2_prime=None):
         debug = False
-
+        
         if debug:
             print(f"Argument: key: {key}, c1: {c1}, c2: {c2}, y1: {y1}, y2: {y2}, y1_prime: {y1_prime}, y2_prime: {y2_prime}, plain_image_path: {plain_image_path}, cipher_image_output_path: {cipher_image_output_path}, frame: {frame}, c1_prime: {c1_prime}, c2_prime: {c2_prime}")
 
         if len(key) != 16:
             raise ValueError("Key must be exactly 16 characters long")
 
+        key_results = []
+            
         if c1_prime is None or c2_prime is None:
             key_results = self.key_stream(key, c1, c2, y1, y2, type="file")
             c1_prime, c2_prime = key_results[14], key_results[15]
-            if debug:
-                print(f"Debug: c1_prime: {c1_prime}, c2_prime: {c2_prime}")
+            # if debug:
+            print(f"Debug: c1_prime: {c1_prime}, c2_prime: {c2_prime}")
 
         # since this class will also be used as a module in video encryption, we have check if the encryption
         # is for image where we have to read the image from the file system or for video where we have to pass the frame
         if plain_image_path is not None and cipher_image_output_path is not None and frame is None:
             frame = cv2.imread(plain_image_path)
-            cipher_image_output_path = self.convert_extension_to_png(cipher_image_output_path)
+            cipher_image_output_path = self.convert_file_extension(cipher_image_output_path, ".png")
             if debug:
                 print(f"Debug: Image read from {plain_image_path}")
 
@@ -76,7 +65,7 @@ class CipherVerseImage(CipherVerseUtils):
             return key_results, cipher_image_output_path, plain_image_path,success
 
         # if the encryption is for video where we have to return the encrypted frame
-        return encrypted_image, c1_prime, c2_prime
+        return encrypted_image, key_results
 
     def decrypt(self, c1_prime, c2_prime, y1_prime, y2_prime, cipher_image_path=None, plain_image_output_path=None, frame=None):
         debug = False
@@ -86,7 +75,7 @@ class CipherVerseImage(CipherVerseUtils):
 
         if cipher_image_path is not None and plain_image_output_path is not None and frame is None:
             frame = cv2.imread(cipher_image_path)
-            plain_image_output_path = self.convert_extension_to_png(plain_image_output_path)
+            plain_image_output_path = self.convert_file_extension(plain_image_output_path, ".png")
             if debug:
                 print(f"Debug: Image read from {cipher_image_path}")
 

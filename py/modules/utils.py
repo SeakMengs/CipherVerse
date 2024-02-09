@@ -1,3 +1,4 @@
+import os
 import random
 
 
@@ -22,6 +23,19 @@ class CipherVerseUtils:
             key_results.append(y_n)
             y[1], y[0] = y[0], y_n
         return key_results
+    
+    def convert_file_extension(self, path, new_extension):
+        # Split the file path into directory path, base filename, and extension
+        directory, file_name = os.path.split(path)
+        base, extension = os.path.splitext(file_name)
+        
+        # If the extension is already the same, return the original path
+        if extension.lower() == new_extension:
+            return path
+        
+        # Construct the new file path with '.png' extension
+        new_file_path = os.path.join(directory, base + new_extension)
+        return new_file_path
 
 if __name__ == "__main__":
     # test f function with file type and text type, should return -1 and 1 respectively

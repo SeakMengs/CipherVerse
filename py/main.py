@@ -80,9 +80,9 @@ def main():
     image_parser.add_argument('-y2_prime', type=float,
                               help='The y2_prime value to use for encryption/decryption.')
     image_parser.add_argument('-c1_prime', type=float,
-                                help='The c1_prime value to use for encryption/decryption.')
+                              help='The c1_prime value to use for encryption/decryption.')
     image_parser.add_argument('-c2_prime', type=float,
-                                help='The c2_prime value to use for encryption/decryption.')
+                              help='The c2_prime value to use for encryption/decryption.')
 
     """
         Video
@@ -135,7 +135,7 @@ def main():
             # print("Decrypted text: ", decrypted_text)
             return
         elif args.command == 'audio':
-            cva = CipherVerseAudio(args.input, args.output, args.key)
+            cva = CipherVerseAudio()
             cva.encrypt()
         elif args.command == 'image':
             cvi = CipherVerseImage()
@@ -148,7 +148,7 @@ def main():
                 "success": success,
             })
         elif args.command == 'video':
-            cvv = CipherVerseVideo(args.input, args.output, args.key)
+            cvv = CipherVerseVideo()
             plain_video_path, cipher_video_output_path, key_results, success = cvv.encrypt(
                 args.key, args.input, args.output, args.c1, args.c2, args.y1, args.y2, args.y1_prime, args.y2_prime)
             print("video-encrypt-splitter", {
@@ -170,7 +170,7 @@ def main():
             })
             return
         elif args.command == 'audio':
-            cva = CipherVerseAudio(args.input, args.output, args.key)
+            cva = CipherVerseAudio()
             cva.decrypt()
         elif args.command == 'image':
             cvi = CipherVerseImage()
@@ -183,18 +183,24 @@ def main():
             })
         elif args.command == 'video':
             cvv = CipherVerseVideo()
-            cvv.encrypt(args.key, args.input, args.output, args.c1,
-                        args.c2, args.y1, args.y2, args.y1_prime, args.y2_prime)
+            plain_video_output_path, cipher_video_path, success = cvv.decrypt(
+                c1_prime=args.c1_prime, c2_prime=args.c2_prime, y1_prime=args.y1_prime, y2_prime=args.y2_prime, cipher_video_path=args.input, plain_video_output_path=args.output)
+            print("video-decrypt-splitter", {
+                "plainVideoOutputPath": plain_video_output_path,
+                "cipherVideoFilePath": cipher_video_path,
+                "success": success,
+            })
 
 
 # run local
 # python main.py --help to see the usage of the script
 if __name__ == '__main__':
-    print("Starting CipherVerse...")
+    print("Starting CipherVerse...", flush=True)
     main()
 
     debugText = False
     debugImage = False
+    debugVideo = False
 
     if debugText:
         cvt = CipherVerseText()
@@ -243,3 +249,20 @@ if __name__ == '__main__':
             key=key, c1=c1, c2=c2, y1=y1, y2=y2, y1_prime=y1_prime, y2_prime=y2_prime, plain_image_path=input, cipher_image_output_path=output)
         plain_image_output_path, cipher_image_path, success = cvi.decrypt(
             c1_prime=key_results[14], c2_prime=key_results[15], y1_prime=y1_prime, y2_prime=y2_prime, cipher_image_path=cipher_image_output_path, plain_image_output_path=decrypt_output)
+
+    if debugVideo:
+        cvv = CipherVerseVideo()
+        input = "../playground/videos/lucky 1 tap.mp4"
+        output = "../playground/videos/lucky 1 tap_encrypted.mp4"
+        output_decrypted = "../playground/videos/lucky 1 tap_decrypted.mp4"
+        key = "asdbgffdmsestuiu"
+        y1_prime = 0.99
+        y2_prime = 0.16
+        c1 = 0.5
+        c2 = 0.25
+        y1 = 0.25
+        y2 = 0.02
+        plain_video_path, cipher_video_output_path, key_results, success = cvv.encrypt(
+            key, input, output, c1, c2, y1, y2, y1_prime, y2_prime)
+        plain_video_output_path, cipher_video_path, success = cvv.decrypt(
+            c1_prime=key_results[14], c2_prime=key_results[15], y1_prime=y1_prime, y2_prime=y2_prime, cipher_video_path=cipher_video_output_path, plain_video_output_path=output_decrypted)
