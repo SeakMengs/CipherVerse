@@ -4,13 +4,13 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "install_pip": "pip install -r py/requirements.txt",
+    "install_pip_requirement": "pip install -r py/requirements.txt",
     "install_pip_reqs": "pip3 install pipreqs pyinstaller",
     "pip_reqs": "pipreqs py/ --force",
     "generate_py_requirements": "npm run install_pip_reqs && npm run pip_reqs",
     "build_py": "pyinstaller -F py/main.py --distpath src-tauri/bin/python/ --clean -n main",
     "dev": "vite",
-    "py_release": "npm run install_pip_reqs && npm run generate_py_requirements && npm run build_py && node scripts/move_binary.js",
+    "py_release": "npm run generate_py_requirements && npm run install_pip_requirement && npm run build_py && node scripts/move_binary.js",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"
