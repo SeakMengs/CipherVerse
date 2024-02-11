@@ -2,11 +2,10 @@ import { invoke } from '@tauri-apps/api/tauri'
 import { useVariantStore } from '@/hooks/useVariantStore';
 import { RUNNING_IN_TAURI } from './utils';
 import { join } from '@tauri-apps/api/path';
-import { CryptoArgs, CryptoFormType } from '@/types/form';
+import { CryptoArgs } from '@/types/form';
 
 export const encryptText = async (text: string) => {
     try {
-
         if (!RUNNING_IN_TAURI) return console.log("Not running in Tauri, skipping encryptText")
 
         const { getVariantFromStorage } = useVariantStore.getState()

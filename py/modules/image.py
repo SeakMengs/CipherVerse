@@ -1,11 +1,54 @@
-from .utils import CipherVerseUtils
+from .utils import CipherVerseUtils, _x_equation, _y_equation
 
 import cv2
 import numpy as np
-import os
+from numba import jit
 
+@jit(nopython=True)
+def encrypt_frame(frame, c1_prime, c2_prime, y1_prime, y2_prime):
+    encrypted_frame = np.zeros(frame.shape, dtype=np.uint8)
+    for i, row in enumerate(frame):
+        for j, intensity in enumerate(row):
+            # update y1_prime and y2_prime for each pixel
+            if j == 0:
+                # array fill with y1,y2 depends on the number of channels in the image
+                _y1_prime = np.full(intensity.shape, y1_prime, dtype=np.uint8)
+                _y2_prime = np.full(intensity.shape, y2_prime, dtype=np.uint8)
+            elif j == 1:
+                _y2_prime = _y1_prime
+                _y1_prime = encrypted_frame[i, 0]
+            else:
+                _y1_prime = encrypted_frame[i, j - 1]
+                _y2_prime = encrypted_frame[i, j - 2]
 
-class CipherVerseImage(CipherVerseUtils):    
+            encrypted_frame[i][j] = _y_equation(
+                intensity, c1_prime, c2_prime, _y1_prime, _y2_prime)
+
+    return encrypted_frame
+
+@jit(nopython=True)
+def decrypt_frame(frame, c1_prime, c2_prime, y1_prime, y2_prime):
+    decrypted_frame = np.zeros(frame.shape, dtype=np.uint8)
+    for i, row in enumerate(frame):
+        for j, intensity in enumerate(row):
+            # update y1_prime and y2_prime for each pixel
+            if j == 0:
+                # array fill with y1,y2 depends on the number of channels in the image
+                _y1_prime = np.full(intensity.shape, y1_prime, dtype=np.uint8)
+                _y2_prime = np.full(intensity.shape, y2_prime, dtype=np.uint8)
+            elif j == 1:
+                _y2_prime = _y1_prime
+                _y1_prime = frame[i, 0]
+            else:
+                _y1_prime = frame[i, j - 1]
+                _y2_prime = frame[i, j - 2]
+
+            decrypted_frame[i][j] = _x_equation(
+                intensity, c1_prime, c2_prime, _y1_prime, _y2_prime)
+
+    return decrypted_frame
+
+class CipherVerseImage(CipherVerseUtils):
     def encrypt(self, key, c1, c2, y1, y2, y1_prime, y2_prime, plain_image_path=None, cipher_image_output_path=None, frame=None, c1_prime=None, c2_prime=None):
         debug = False
         
@@ -20,8 +63,8 @@ class CipherVerseImage(CipherVerseUtils):
         if c1_prime is None or c2_prime is None:
             key_results = self.key_stream(key, c1, c2, y1, y2, type="file")
             c1_prime, c2_prime = key_results[14], key_results[15]
-            # if debug:
-            print(f"Debug: c1_prime: {c1_prime}, c2_prime: {c2_prime}")
+            if debug:
+                print(f"Debug From Image Encrypt: c1_prime: {c1_prime}, c2_prime: {c2_prime}")
 
         # since this class will also be used as a module in video encryption, we have check if the encryption
         # is for image where we have to read the image from the file system or for video where we have to pass the frame
@@ -31,29 +74,32 @@ class CipherVerseImage(CipherVerseUtils):
             if debug:
                 print(f"Debug: Image read from {plain_image_path}")
 
-        encrypted_image = np.zeros(frame.shape, dtype=np.uint8)
+        # encrypted_image = np.zeros(frame.shape, dtype=np.uint8)
 
-        for i, row in enumerate(frame):
-            for j, intensity in enumerate(row):
-                # update y1_prime and y2_prime for each pixel
-                if j == 0:
-                    # array fill with y1,y2 depends on the number of channels in the image
-                    y1_prime = np.full(intensity.shape, y1_prime)
-                    y2_prime = np.full(intensity.shape, y2_prime)
-                elif j == 1:
-                    y2_prime = y1_prime
-                    y1_prime = encrypted_image[0, 0]
-                else:
-                    y1_prime = encrypted_image[i, j - 1]
-                    y2_prime = encrypted_image[i, j - 2]
+        # for i, row in enumerate(frame):
+        #     for j, intensity in enumerate(row):
+        #         # update y1_prime and y2_prime for each pixel
+        #         if j == 0:
+        #             # array fill with y1,y2 depends on the number of channels in the image
+        #             y1_prime = np.full(intensity.shape, y1_prime)
+        #             y2_prime = np.full(intensity.shape, y2_prime)
+        #         elif j == 1:
+        #             y2_prime = y1_prime
+        #             y1_prime = encrypted_image[i, 0]
+        #         else:
+        #             y1_prime = encrypted_image[i, j - 1]
+        #             y2_prime = encrypted_image[i, j - 2]
 
-                encrypted_image[i][j] = self.y_equation(
-                    intensity, c1_prime, c2_prime, y1_prime, y2_prime)
+        #         encrypted_image[i][j] = self.y_equation(
+        #             intensity, c1_prime, c2_prime, y1_prime, y2_prime)
 
-                if debug:
-                    pass
+                # if debug:
+                #     pass
                     # print(
                     #     f"Debug: Encrypted pixel at ({i}, {j}): {encrypted_image[i][j]} Original pixel: {intensity}")
+                    
+        # using jit to compile the function to machine code for faster execution
+        encrypted_image = encrypt_frame(frame, c1_prime, c2_prime, y1_prime, y2_prime)
 
         # for testing purposes
         # self.decrypt(c1_prime=c1_prime, c2_prime=c2_prime, y1_prime=y1_prime, y2_prime=y2_prime, frame=encrypted_image)
@@ -66,7 +112,7 @@ class CipherVerseImage(CipherVerseUtils):
 
         # if the encryption is for video where we have to return the encrypted frame
         return encrypted_image, key_results
-
+    
     def decrypt(self, c1_prime, c2_prime, y1_prime, y2_prime, cipher_image_path=None, plain_image_output_path=None, frame=None):
         debug = False
 
@@ -79,26 +125,28 @@ class CipherVerseImage(CipherVerseUtils):
             if debug:
                 print(f"Debug: Image read from {cipher_image_path}")
 
-        decrypted_image = np.zeros(frame.shape, dtype=np.uint8)
-        for i, row in enumerate(frame):
-            for j, intensity in enumerate(row):
-                # update y1_prime and y2_prime for each pixel
-                if j == 0:
-                    # array fill with y1,y2 depends on the number of channels in the image
-                    y1_prime = np.full(intensity.shape, y1_prime)
-                    y2_prime = np.full(intensity.shape, y2_prime)
-                elif j == 1:
-                    y2_prime = y1_prime
-                    # use the encrypted image
-                    y1_prime = frame[0, 0]
-                else:
-                    # use the encrypted image
-                    y1_prime = frame[i, j - 1]
-                    y2_prime = frame[i, j - 2]
+        # decrypted_image = np.zeros(frame.shape, dtype=np.uint8)
+        # for i, row in enumerate(frame):
+        #     for j, intensity in enumerate(row):
+        #         # update y1_prime and y2_prime for each pixel
+        #         if j == 0:
+        #             # array fill with y1,y2 depends on the number of channels in the image
+        #             y1_prime = np.full(intensity.shape, y1_prime)
+        #             y2_prime = np.full(intensity.shape, y2_prime)
+        #         elif j == 1:
+        #             y2_prime = y1_prime
+        #             # use the encrypted image
+        #             y1_prime = frame[i, 0]
+        #         else:
+        #             # use the encrypted image
+        #             y1_prime = frame[i, j - 1]
+        #             y2_prime = frame[i, j - 2]
 
-                decrypted_image[i][j] = self.x_equation(
-                    intensity, c1_prime, c2_prime, y1_prime, y2_prime)
+        #         decrypted_image[i][j] = self.x_equation(
+        #             intensity, c1_prime, c2_prime, y1_prime, y2_prime)
 
+        decrypted_image = decrypt_frame(frame, c1_prime, c2_prime, y1_prime, y2_prime)
+        
         # cv2.imshow("Decrypted Image", decrypted_image)
         # cv2.waitKey(0)
         if cipher_image_path is not None and plain_image_output_path is not None:

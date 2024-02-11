@@ -195,7 +195,7 @@ def main():
 # run local
 # python main.py --help to see the usage of the script
 if __name__ == '__main__':
-    print("Starting CipherVerse...", flush=True)
+    print("Starting CipherVerse...")
     main()
 
     debugText = False
@@ -230,8 +230,7 @@ if __name__ == '__main__':
             cipher_text=cipher_text, c1_prime=key_results[14], c2_prime=key_results[15], y1_prime=y1_prime, y2_prime=y2_prime)
         print(f"Decrypted Text: {decrypted_text}")
 
-        if input == decrypted_text:
-            print("Encrypt and Decrypt successful")
+        assert input == decrypted_text
 
     if debugImage:
         cvi = CipherVerseImage()

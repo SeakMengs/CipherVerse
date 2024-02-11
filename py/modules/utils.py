@@ -1,6 +1,14 @@
 import os
 import random
+from numba import jit
 
+@jit(nopython=True)
+def _y_equation(x, c1_, c2_, y1_, y2_):
+    return x + c1_ * y1_ + c2_ * y2_
+
+@jit(nopython=True)
+def _x_equation(y, c1_, c2_, y1_, y2_):
+    return y - c1_ * y1_ - c2_ * y2_
 
 class CipherVerseUtils:
     def f(self, x, type = None):
@@ -9,11 +17,12 @@ class CipherVerseUtils:
         # text
         return (x % 2) - 1
 
+    # using numba to speed up the process
     def y_equation(self, x, c1_, c2_, y1_, y2_):
-        return x + c1_ * y1_ + c2_ * y2_
+        return _y_equation(x, c1_, c2_, y1_, y2_)
     
     def x_equation(self, y, c1_, c2_, y1_, y2_):
-        return y - c1_ * y1_ - c2_ * y2_
+        return _x_equation(y, c1_, c2_, y1_, y2_)
 
     def key_stream(self, key, c1, c2, y1, y2, type = None):
         key_results = []
