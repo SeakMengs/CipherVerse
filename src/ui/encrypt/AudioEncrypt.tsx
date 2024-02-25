@@ -33,7 +33,6 @@ const AudioEncrypt = memo(() => {
                 }
 
                 const result = parseStdOut<AudioEncryptResult>(stdout);
-
                 if (!result.success) {
                     toast({
                         title: 'Error',
@@ -82,7 +81,7 @@ const AudioEncrypt = memo(() => {
                                 {fileEncrypted.c2Prime}
                             </p>
                         </div>
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 pb-4">
                             <p className="text-sm text-nowrap text-green-300">
                                 {`Plain Audio: ${fileEncrypted.plainInputFilePath}`}
                             </p>

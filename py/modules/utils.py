@@ -10,12 +10,16 @@ def _y_equation(x, c1_, c2_, y1_, y2_):
 def _x_equation(y, c1_, c2_, y1_, y2_):
     return y - c1_ * y1_ - c2_ * y2_
 
+@jit(nopython=True)
+def _f(x, type = None):
+    if type == "file":
+        return ((x+1) % 2) - 1
+    # text
+    return (x % 2) - 1
+
 class CipherVerseUtils:
     def f(self, x, type = None):
-        if type == "file":
-            return ((x+1) % 2) - 1
-        # text
-        return (x % 2) - 1
+        return _f(x, type)
 
     # using numba to speed up the process
     def y_equation(self, x, c1_, c2_, y1_, y2_):

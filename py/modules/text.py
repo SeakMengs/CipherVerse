@@ -1,4 +1,4 @@
-from .utils import CipherVerseUtils
+from .utils import CipherVerseUtils, _x_equation, _y_equation
 
 
 class CipherVerseText(CipherVerseUtils):
@@ -19,7 +19,7 @@ class CipherVerseText(CipherVerseUtils):
         y = [y1_prime, y2_prime]
         for char in plain_text:
             original_values.append(ord(char))
-            y_n = round(self.y_equation(
+            y_n = round(_y_equation(
                 ord(char), c1_prime, c2_prime, y[0], y[1]))
             cipher_values.append(y_n)
 
@@ -40,7 +40,7 @@ class CipherVerseText(CipherVerseUtils):
         # decryption operation
         y = [y1_prime, y2_prime]
         for cipher_char in cipher_text:
-            x_n = round(self.x_equation(ord(cipher_char),
+            x_n = round(_x_equation(ord(cipher_char),
                         c1_prime, c2_prime, y[0], y[1]))
             decrypt_values.append(x_n)
 

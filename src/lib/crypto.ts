@@ -138,9 +138,3 @@ export const decryptFile = async (inputPath: string, outputFolder: string, outpu
         console.log(`Error in decryptFile type ${type}: `, error)
     }
 }
-
-// TODO: implement these function
-export const decryptVideo = async () => { }
-export const decryptImage = async () => { }
-export const encryptAudio = async () => { }
-export const decryptAudio = async () => { }

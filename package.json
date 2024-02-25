@@ -9,8 +9,8 @@
     "pip_reqs": "pipreqs py/ --force",
     "generate_py_requirements": "npm run install_pip_reqs && npm run pip_reqs",
     "build_py": "pyinstaller -F py/main.py --distpath src-tauri/bin/python/ --clean -n main",
-    "dev": "vite",
     "py_release": "npm run generate_py_requirements && npm run install_pip_requirement && npm run build_py && node scripts/move_binary.js",
+    "dev": "vite",
     "build": "tsc && vite build",
     "preview": "vite preview",
     "tauri": "tauri"

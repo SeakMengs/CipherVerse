@@ -63,7 +63,7 @@ const AudioDecrypt = memo(() => {
                         <Label>Output</Label>
                     </div>
                     <div className="text-wrap">
-                        <div className="flex gap-1">
+                        <div className="flex gap-1 pb-4">
                             <p className="text-sm text-nowrap text-green-300">
                                 {`Cipher Audio: ${fileDecrypted.cipherInputFilePath}`}
                             </p>
