@@ -12,8 +12,8 @@ def encrypt_audio(y1_prime, y2_prime, c1_prime, c2_prime, audio):
             _y1_prime = y1_prime
             _y2_prime = y2_prime
         elif i == 1:
-            _y1_prime = y2_prime
-            _y2_prime = encrypted_audio[i - 1]
+            _y2_prime = y1_prime
+            _y1_prime = encrypted_audio[i - 1]
         else:
             _y1_prime = encrypted_audio[i - 1]
             _y2_prime = encrypted_audio[i - 2]
@@ -34,8 +34,8 @@ def decrypt_audio(y1_prime, y2_prime, c1_prime, c2_prime, audio):
             _y1_prime = y1_prime
             _y2_prime = y2_prime
         elif i == 1:
-            _y1_prime = y2_prime
-            _y2_prime = audio[i - 1]
+            _y2_prime = y1_prime
+            _y1_prime = audio[i - 1]
         else:
             _y1_prime = audio[i - 1]
             _y2_prime = audio[i - 2]
@@ -61,7 +61,7 @@ class CipherVerseAudio(CipherVerseUtils):
         # Read the audio file
         audio, sample_rate = sf.read(plain_audio_path)
 
-        # soundfile read stereo audio as 2D array, we only need one channel
+        # soundfile read 2D array, we convert to 1d
         audio_1d = audio
         if audio.ndim == 2:
             audio_1d = audio[:, 0]
